@@ -4,7 +4,38 @@ using System.Text;
 
 namespace RTP.Net
 {
-    class RTCPHeader
+    /// <summary>
+    /// RTCP common header word.
+    /// </summary>
+    public class RTCPHeader
     {
+        public RTCPHeader(bool padding, byte count, RTCPType type, uint length)
+        {
+            this.Padding = padding;
+            this.Count = count;
+            this.Type = type;
+            this.Length = length;
+        }
+
+        RTPVersion Version { get => RTPVersion.Two; } //protocol version
+
+        public bool Padding { get; private set; } //padding flag
+
+        public byte Count //varies by packet type
+        {
+            get
+            {
+                return Count;
+            }
+            private set
+            {
+                if (value >= (1 << 5)) throw new ArgumentOutOfRangeException("input data must be 5 bytes");
+                Count = value;
+            }
+        }
+
+        public RTCPType Type { get; private set; } //RTCP packet type
+
+        public uint Length { get; private set; } //pkt len in words, w/o this word
     }
 }

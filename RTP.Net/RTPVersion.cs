@@ -4,7 +4,9 @@ using System.Text;
 
 namespace RTP.Net
 {
-    class RTPVersion
+    public enum RTPVersion
     {
+        One = 1,
+        Two = 2
     }
 }
