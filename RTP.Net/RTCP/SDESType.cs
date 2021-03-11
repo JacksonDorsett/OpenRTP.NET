@@ -4,7 +4,7 @@ using System.Text;
 
 namespace RTP.Net
 {
-    public enum SDESTypes
+    public enum SDESType
     {
         END,  //end of SDES list
         CNAME,//canonical name

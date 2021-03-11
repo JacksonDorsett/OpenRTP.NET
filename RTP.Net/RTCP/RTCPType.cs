@@ -2,7 +2,7 @@
 using System.Collections.Generic;
 using System.Text;
 
-namespace RTP.Net
+namespace RTP.Net.RTCP
 {
     public enum RTCPType
     {

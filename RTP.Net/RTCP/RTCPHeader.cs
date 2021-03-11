@@ -2,7 +2,7 @@
 using System.Collections.Generic;
 using System.Text;
 
-namespace RTP.Net
+namespace RTP.Net.RTCP
 {
     /// <summary>
     /// RTCP common header word.
@@ -11,10 +11,10 @@ namespace RTP.Net
     {
         public RTCPHeader(bool padding, byte count, RTCPType type, uint length)
         {
-            this.Padding = padding;
-            this.Count = count;
-            this.Type = type;
-            this.Length = length;
+            Padding = padding;
+            Count = count;
+            Type = type;
+            Length = length;
         }
 
         RTPVersion Version { get => RTPVersion.Two; } //protocol version
@@ -29,7 +29,7 @@ namespace RTP.Net
             }
             private set
             {
-                if (value >= (1 << 5)) throw new ArgumentOutOfRangeException("input data must be 5 bytes");
+                if (value >= 1 << 5) throw new ArgumentOutOfRangeException("input data must be 5 bytes");
                 Count = value;
             }
         }
