@@ -5,7 +5,7 @@ using System.Text;
 
 namespace RTP.Net
 {
-    class RTPConstants
+    public class RTPConstants
     {
         public static readonly RTPVersion VERSION = RTPVersion.Two;
 

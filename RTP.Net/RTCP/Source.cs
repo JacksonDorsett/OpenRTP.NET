@@ -10,19 +10,7 @@ namespace RTP.Net.RTCP
         {
             InitSequence(seq);
         }
-        public Source(ushort maxSequence, uint cycles, uint baseSequence, uint badSequence, uint probation, uint recieved, uint expectedPrior, uint recievedPrior, uint transmit, uint jitter)
-        {
-            MaxSequence = maxSequence;
-            Cycles = cycles;
-            BaseSequence = baseSequence;
-            BadSequence = badSequence;
-            Probation = probation;
-            Recieved = recieved;
-            ExpectedPrior = expectedPrior;
-            RecievedPrior = recievedPrior;
-            Transmit = transmit;
-            Jitter = jitter;
-        }
+
 
         /// <summary>
         /// highest seq. number seen
