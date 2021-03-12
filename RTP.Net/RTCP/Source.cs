@@ -4,7 +4,7 @@ using System.Text;
 
 namespace RTP.Net.RTCP
 {
-    class Source
+    public class Source
     {
         public Source(ushort seq)
         {
