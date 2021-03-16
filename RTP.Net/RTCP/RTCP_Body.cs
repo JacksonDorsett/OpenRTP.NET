@@ -1,6 +1,6 @@
 ﻿namespace RTP.Net.RTCP
 {
-    public  class RTCP_Body
+    public class RTCP_Body
     {
         
     }
