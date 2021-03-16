@@ -10,7 +10,7 @@ namespace OpenRTPTests
         [Test]
         public void TestSerialize()
         {
-            RTPHeader t = new RTPHeader(2, false, false, 1, false, 32, 64, 1, 124, new uint[] { 16 });
+            RTPHeader t = new RTPHeader(RTPVersion.TWO, false, false, 1, false, 32, 64, 1, 124, new uint[] { 16 });
             var bts = t.Serialize();
             Assert.AreEqual(129, bts[0]);
             Assert.AreEqual(32, bts[1]);
