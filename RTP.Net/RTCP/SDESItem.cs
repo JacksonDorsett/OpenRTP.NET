@@ -1,10 +1,11 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.IO;
 using System.Text;
 
 namespace RTP.Net.RTCP
 {
-    class SDESItem
+    class SDESItem : ISerialize
     {
         public SDESItem(byte type, byte length, byte[] data)
         {
@@ -30,5 +31,17 @@ namespace RTP.Net.RTCP
         /// text, not null-terminated
         /// </summary>
         public string data { get; private set; }
+
+        public byte[] Serialize()
+        {
+            byte[] b = new byte[2 + Length];
+            using (BinaryWriter writer = new BinaryWriter(new MemoryStream(b)))
+            {
+                writer.Write((byte)this.Type);
+                writer.Write(Length);
+                writer.Write(Encoding.UTF8.GetBytes(data));
+            }
+            return b;
+        }
     }
 }
