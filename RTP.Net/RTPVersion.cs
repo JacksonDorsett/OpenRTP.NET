@@ -1,12 +1,18 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Text;
-
-namespace RTP.Net
+﻿namespace RTP.Net
 {
+    /// <summary>
+    ///     An enum that represents the version of RTP.
+    /// </summary>
     public enum RTPVersion
     {
-        One = 1,
-        Two = 2
+        /// <summary>
+        ///     Version one of the RTP.
+        /// </summary>
+        ONE = 0x1,
+
+        /// <summary>
+        ///     Version two of the RTP.
+        /// </summary>
+        TWO = 0x2
     }
 }
