@@ -6,9 +6,13 @@ namespace RTP.Net.RTCP
 {
     public class Source
     {
+        // Minimum sequential packets to validate source.
+        private static readonly uint MIN_SEQUENTIAL = 2;
         public Source(ushort seq)
         {
             InitSequence(seq);
+            MaxSequence = (ushort)(seq - 1);
+            Probation = MIN_SEQUENTIAL;
         }
 
 
@@ -62,6 +66,10 @@ namespace RTP.Net.RTCP
         /// </summary>
         public uint Jitter { get; private set; }
     
+        /// <summary>
+        /// Derived Value checking if the source is currently valid.
+        /// </summary>
+        public bool IsValidated { get => Probation == 0; }
         public int UpdateSequence(ushort seq)
         {
             /// Replace return code with exception??

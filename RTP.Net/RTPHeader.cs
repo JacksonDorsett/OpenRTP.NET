@@ -1,12 +1,20 @@
-﻿using System;
+﻿using RTP.Net.RTCP;
+using RTP.Net.Utils;
+using System;
 
 namespace RTP.Net
 {
     public class RTPHeader
     {
-
-        public RTPHeader(RTPVersion version, bool padding, bool extension, byte csrcCount, bool marker, byte payloadType, ushort sequenceNum, uint timeStamp, uint ssrc, uint[] csrcList)
+        byte mCSRCCount;
+        uint[] mCSRCList;
+        byte mPayloadType;
+        public RTPHeader(byte version, bool padding, bool extension, byte csrcCount, bool marker, byte payloadType, ushort sequenceNum, uint timeStamp, uint ssrc, uint[] csrcList)
         {
+            //RTP header validity checks
+            if (version != 2) throw new FormatException("Header version must be 2");
+            if (payloadType == (byte)RTCPType.SR || payloadType == (byte)RTCPType.RR) throw new FormatException("payload type must not be RR or SR");
+
             this.Version = version;
             this.Padding = padding;
             this.Extension = extension;
@@ -19,7 +27,7 @@ namespace RTP.Net
             this.CSRCList = csrcList;
         }
 
-        public RTPVersion Version { get; private set; }
+        public byte Version { get; private set; }
 
         public bool Padding { get; private set; }
 
@@ -29,11 +37,12 @@ namespace RTP.Net
         {
             get
             {
-                return CSRCCount;
+                return mCSRCCount;
             }
             private set
             {
-                if (value > 15) throw new ArgumentOutOfRangeException($"CSRC Count must be less than 16 value set was: {value}");
+                if (value > 15) throw new ArgumentOutOfRangeException("CSRC Count must be less than 16");
+                this.mCSRCCount = value;
             }
         }
 
@@ -48,11 +57,12 @@ namespace RTP.Net
         {
             get
             {
-                return PayloadType;
+                return mPayloadType;
             }
             private set
             {
                 if (value > 127) throw new ArgumentOutOfRangeException($"Payload type cannot be greater than 127 but was: {value}");
+                mPayloadType = value;
             }
         }
 
@@ -90,18 +100,61 @@ namespace RTP.Net
         {
             get
             {
-                return CSRCList;
+                return mCSRCList;
             }
             set
             {
                 if (value.Length != CSRCCount) throw new ArgumentOutOfRangeException("Length of CSRC list does not match given parameter");
-                CSRCList = value;
+                mCSRCList = value;
             }
         }
 
 
+        public uint Length
+        {
+            get
+            {
+                return 96 + 32 * (uint)this.CSRCList.Length;
+            }
+        }
 
+        public byte[] Serialize()
+        {
+            byte[] ret = new byte[this.Length];
+            ret[0] |= 2 << 6;
+            ret[0] |= (byte)(Convert2Byte(this.Padding) << 5);
+            ret[0] |= (byte)(Convert2Byte(this.Extension) << 4);
+            ret[0] |= this.CSRCCount;
 
+            ret[1] |= (byte)(Convert2Byte(this.Extension) << 7);
+            ret[1] |= PayloadType;
+            // Serialize sequence order
+            SerializeSequenceNum(ret);
+            SerializeTimestamp(ret);
+            return ret;
+        }
 
+        private void SerializeTimestamp(byte[] ret)
+        {
+            byte TIMESTAMP_OFFSET = 4;
+            var ts = BitConverter.GetBytes(this.Timestamp);
+            if (BitConverter.IsLittleEndian) Array.Reverse(ts);
+            for(int i = 0; i < ts.Length; i++)
+            {
+                ret[TIMESTAMP_OFFSET + i] = ts[i];
+            }
+        }
+
+        private void SerializeSequenceNum(byte[] ret)
+        {
+            var sn = NetworkConverter.ToNetworkOrder(this.SequenceNumber);
+            ret[2] = BitConverter.GetBytes(sn)[0];
+            ret[3] = BitConverter.GetBytes(sn)[1];
+        }
+
+        private byte Convert2Byte(bool b)
+        {
+            return b == true ? (byte)1 : (byte)0;
+        }
     }
 }
