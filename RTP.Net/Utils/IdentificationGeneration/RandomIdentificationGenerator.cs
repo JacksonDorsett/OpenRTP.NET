@@ -19,11 +19,6 @@ namespace RTP.Net.Utils.IdentificationGeneration
         private static readonly Random Random = new Random();
 
         /// <summary>
-        ///     The number of bytes in our array.
-        /// </summary>
-        private const int NumBytes = 4;
-
-        /// <summary>
         ///     Our method gets a random 32-bit identifier using
         ///     MD5.
         ///     (https://tools.ietf.org/html/rfc1321)
@@ -33,7 +28,7 @@ namespace RTP.Net.Utils.IdentificationGeneration
         {
             // Basically obtains various sources of randomness 
             var randomNumber = Random.Next(int.MaxValue);
-            var processID = Process.GetCurrentProcess().ToString();
+            var processId = Process.GetCurrentProcess().ToString();
             var dateTime = DateTime.Now.ToString("h:mm:ss tt zz");
             var typeCode = type.GetHashCode();
 
@@ -42,7 +37,7 @@ namespace RTP.Net.Utils.IdentificationGeneration
             using var memoryStream = new MemoryStream();
             using var binaryWriter = new BinaryWriter(memoryStream);
             binaryWriter.Write(randomNumber);
-            binaryWriter.Write(processID);
+            binaryWriter.Write(processId);
             binaryWriter.Write(dateTime);
             binaryWriter.Write(typeCode);
 
