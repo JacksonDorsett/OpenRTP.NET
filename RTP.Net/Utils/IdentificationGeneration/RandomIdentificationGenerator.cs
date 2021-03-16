@@ -27,7 +27,7 @@ namespace RTP.Net.Utils.IdentificationGeneration
         ///     (https://tools.ietf.org/html/rfc1321)
         ///     https://msdn.microsoft.com/en-us/library/system.security.cryptography.md5%28v=vs.110%29.aspx
         /// </summary>
-        public static byte[] GetRandomIdentification(SDESType type = SDESType.CNAME)
+        public static byte[] GetRandomIdentification()
         {
             // an array of bytes
             var randomByteArray = new byte[ByteArraySize];

@@ -291,14 +291,7 @@ namespace RTP.Net
 
         }
 
-
-        public uint Length
-        {
-            get
-            {
-                return 96 + 32 * (uint)this.CSRCList.Length;
-            }
-        }
+        public uint Length => 96 + 32 * (uint)this.CSRCList.Length;
 
         public byte[] Serialize()
         {
@@ -347,9 +340,14 @@ namespace RTP.Net
             ret[3] = BitConverter.GetBytes(sn)[1];
         }
 
-        private byte Convert2Byte(bool b)
+        /// <summary>
+        ///     Converts a boolean to a byte.
+        /// </summary>
+        /// <param name="b">The boolean we are passing as an argument</param>
+        /// <returns>The byte representation of a boolean.</returns>
+        private static byte Convert2Byte(bool byteBoolean)
         {
-            return b == true ? (byte)1 : (byte)0;
+            return byteBoolean ? (byte)1 : (byte)0;
         }
     }
 }
