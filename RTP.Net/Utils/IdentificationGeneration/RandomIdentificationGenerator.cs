@@ -1,6 +1,7 @@
 ﻿using System;
 using System.Security.Cryptography;
 using System.Text;
+using System.Threading;
 
 namespace RTP.Net.Utils.IdentificationGeneration
 {
@@ -30,9 +31,10 @@ namespace RTP.Net.Utils.IdentificationGeneration
             // make it more random
             var inputString = (typeCode * dateTime + Random.Next(dateTime.GetHashCode()));
 
+            // use the C# library to do the heavy lifting
             using var md5 = MD5.Create();
             var input = Encoding.ASCII.GetBytes(inputString.ToString());
-            var hash = md5.ComputeHash(input);
+            var hash = md5.ComputeHash(input, 0, count: 4);
 
             return hash;
         }
