@@ -58,7 +58,7 @@ namespace RTP.Net.RTCP
         /// <summary>
         ///     The RTP version that we are currently using.
         /// </summary>
-        public RTPVersion Version { get; }
+        public RTPVersion Version { get; private set; }
 
         /// <summary>
         ///     If the padding bit is set, this individual RTCP packet contains
@@ -78,7 +78,7 @@ namespace RTP.Net.RTCP
         ///     individual packet and add padding to the last individual packet.
         ///     (https://tools.ietf.org/html/rfc3550#section-6.1)
         /// </summary>
-        protected bool Padding { get; }
+        protected bool Padding { get; private set; }
 
         /// <summary>
         ///     The number of reception report blocks contained in this packet.  A
@@ -105,17 +105,17 @@ namespace RTP.Net.RTCP
         ///     low, all RTP implementations must be prepared to detect and
         ///     resolve collisions.
         /// </summary>
-        public uint SSRC { get; }
+        public uint SSRC { get; private set; }
 
         /// <summary>
         ///     Gets the type of the RTCP packet.
         /// </summary>
-        public RTCPType Type { get; }
+        public RTCPType Type { get; private set; }
 
         /// <summary>
         ///     Gets the length of the RTCP packet.
         /// </summary>
-        public uint Length { get; }
+        public uint Length { get; private set; }
 
         /// <summary>
         ///     Corresponds to the same time as the NTP timestamp (above), but in
@@ -131,7 +131,7 @@ namespace RTP.Net.RTCP
         ///     maintained by periodically checking the wallclock time at a
         ///     sampling instant.
         /// </summary>
-        protected uint TimeStamp { get; }
+        protected uint TimeStamp { get; private set; }
 
         /// <summary>
         ///     The total number of RTP data packets transmitted by the sender
@@ -139,7 +139,7 @@ namespace RTP.Net.RTCP
         ///     generated.  The count SHOULD be reset if the sender changes its
         ///     SSRC identifier
         /// </summary>
-        protected uint PacketCount { get; }
+        protected uint PacketCount { get; private set; }
 
         /// <summary>
         ///     The total number of payload octets (i.e., not including header or
@@ -149,6 +149,6 @@ namespace RTP.Net.RTCP
         /// SSRC identifier.  This field can be used to estimate the average
         /// payload data rate.
         /// </summary>
-        protected uint OctetCount { get; }
+        protected uint OctetCount { get; private set; }
     }
 }

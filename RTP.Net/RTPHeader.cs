@@ -209,7 +209,7 @@ namespace RTP.Net
         ///     number of bits in the payload type field (see Section 5.3).
         ///     (https://tools.ietf.org/html/rfc3550)
         /// </summary>
-        public bool Marker { get; }
+        public bool Marker { get; private set; }
 
         /// <summary>
         ///     A receiver |MUST| ignore packets with payload types that it does not understand.
@@ -241,7 +241,7 @@ namespace RTP.Net
         ///     encrypt according to the method in Section 9.1, because the
         ///     packets may flow through a translator that does.
         /// </summary>
-        public ushort SequenceNumber { get; }
+        public ushort SequenceNumber { get; private set; }
 
         /// <summary>
         ///     The sampling instant MUST be derived from a
@@ -251,7 +251,7 @@ namespace RTP.Net
         ///     synchronization accuracy and for measuring packet arrival jitter
         ///     (one tick per video frame is typically not sufficient)
         /// </summary>
-        public uint Timestamp { get; }
+        public uint Timestamp { get; private set; }
 
         /// <summary>
         ///     The SSRC field identifies the synchronization source.  This
@@ -262,7 +262,7 @@ namespace RTP.Net
         ///     low, all RTP implementations must be prepared to detect and
         ///     resolve collisions.
         /// </summary>
-        public uint SSRC { get; }
+        public uint SSRC { get; private set; }
 
         /// <summary>
         ///     The CSRC list identifies the contributing sources for the payload
