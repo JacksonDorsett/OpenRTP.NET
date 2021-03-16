@@ -49,6 +49,12 @@ namespace RTP.Net.Utils.IdentificationGeneration
             // use the C# library to do the heavy lifting
             using var md5 = MD5.Create();
             var hash = md5.ComputeHash(memoryStream.ToArray(), 0, count: 4);
+
+            // closing the streams
+            memoryStream.Close();
+            binaryWriter.Close();
+
+            // return our unique identifier :-)
             return hash;
         }
     }
