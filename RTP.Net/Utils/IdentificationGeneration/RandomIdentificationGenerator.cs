@@ -22,14 +22,14 @@ namespace RTP.Net.Utils.IdentificationGeneration
         ///     (https://tools.ietf.org/html/rfc1321)
         ///     https://msdn.microsoft.com/en-us/library/system.security.cryptography.md5%28v=vs.110%29.aspx
         /// </summary>
-        public static byte[] GetRandomIdentification(SDESType type)
+        public static byte[] GetRandomIdentification(SDESType type = SDESType.CNAME)
         {
             // Creates a new instance of this class, gets random hashcodes
             var typeCode = type.GetHashCode();
             var dateTime = DateTime.Now.Ticks;
 
             // make it more random
-            var inputString = (typeCode * dateTime + Random.Next(dateTime.GetHashCode()));
+            var inputString = (typeCode * Random.Next(int.MaxValue));
 
             // use the C# library to do the heavy lifting
             using var md5 = MD5.Create();
