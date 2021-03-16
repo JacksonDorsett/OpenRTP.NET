@@ -312,8 +312,10 @@ namespace RTP.Net
             ret[1] |= PayloadType;
             // Serialize sequence order
             SerializeSequenceNum(ret);
-            SerializeTimestamp(ret);
-            SerializeSSRC(ret);
+
+            SerializeNetworkInt(ret, this.Timestamp, 4);
+            SerializeNetworkInt(ret, this.SSRC, 8);
+
             SerializeCSRC(ret);
             return ret;
         }
@@ -338,27 +340,6 @@ namespace RTP.Net
             }
         }
 
-        private void SerializeTimestamp(byte[] ret)
-        {
-            byte TIMESTAMP_OFFSET = 4;
-            var ts = BitConverter.GetBytes(this.Timestamp);
-            if (BitConverter.IsLittleEndian) Array.Reverse(ts);
-            for(int i = 0; i < ts.Length; i++)
-            {
-                ret[TIMESTAMP_OFFSET + i] = ts[i];
-            }
-        }
-
-        private void SerializeSSRC(byte[] ret)
-        {
-            byte SSRC_OFFSET = 8;
-            var ts = BitConverter.GetBytes(this.SSRC);
-            if (BitConverter.IsLittleEndian) Array.Reverse(ts);
-            for (int i = 0; i < ts.Length; i++)
-            {
-                ret[SSRC_OFFSET + i] = ts[i];
-            }
-        }
         private void SerializeSequenceNum(byte[] ret)
         {
             var sn = NetworkConverter.ToNetworkOrder(this.SequenceNumber);
