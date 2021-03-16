@@ -313,6 +313,7 @@ namespace RTP.Net
             // Serialize sequence order
             SerializeSequenceNum(ret);
             SerializeTimestamp(ret);
+            SerializeSSRC(ret);
             return ret;
         }
 
@@ -327,6 +328,16 @@ namespace RTP.Net
             }
         }
 
+        private void SerializeSSRC(byte[] ret)
+        {
+            byte SSRC_OFFSET = 8;
+            var ts = BitConverter.GetBytes(this.SSRC);
+            if (BitConverter.IsLittleEndian) Array.Reverse(ts);
+            for (int i = 0; i < ts.Length; i++)
+            {
+                ret[SSRC_OFFSET + i] = ts[i];
+            }
+        }
         private void SerializeSequenceNum(byte[] ret)
         {
             var sn = NetworkConverter.ToNetworkOrder(this.SequenceNumber);
