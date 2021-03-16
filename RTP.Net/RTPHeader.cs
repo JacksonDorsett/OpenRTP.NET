@@ -314,7 +314,28 @@ namespace RTP.Net
             SerializeSequenceNum(ret);
             SerializeTimestamp(ret);
             SerializeSSRC(ret);
+            SerializeCSRC(ret);
             return ret;
+        }
+
+        private void SerializeCSRC(byte[] ret)
+        {
+            int offset = 12;
+            foreach (var c in this.CSRCList)
+            {
+                SerializeNetworkInt(ret, c, offset);
+                offset += 4;
+            }
+        }
+
+        private void SerializeNetworkInt(byte[] a, uint n, int offset)
+        {
+            var ts = BitConverter.GetBytes(n);
+            if (BitConverter.IsLittleEndian) Array.Reverse(ts);
+            for (int i = 0; i < ts.Length; i++)
+            {
+                a[offset + i] = ts[i];
+            }
         }
 
         private void SerializeTimestamp(byte[] ret)
