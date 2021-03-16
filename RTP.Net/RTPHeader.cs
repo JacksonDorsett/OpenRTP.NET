@@ -291,7 +291,7 @@ namespace RTP.Net
 
         }
 
-        public uint Length => 96 + 32 * (uint)this.CSRCList.Length;
+        public uint Length => 12 + 4 * (uint)this.CSRCList.Length;
 
         public byte[] Serialize()
         {
