@@ -1,4 +1,6 @@
 ﻿using System;
+using System.Diagnostics;
+using System.IO;
 using System.Security.Cryptography;
 using System.Text;
 using System.Threading;
@@ -17,6 +19,11 @@ namespace RTP.Net.Utils.IdentificationGeneration
         private static readonly Random Random = new Random();
 
         /// <summary>
+        ///     The number of bytes in our array.
+        /// </summary>
+        private const int NumBytes = 4;
+
+        /// <summary>
         ///     Our method gets a random 32-bit identifier using
         ///     MD5.
         ///     (https://tools.ietf.org/html/rfc1321)
@@ -24,18 +31,24 @@ namespace RTP.Net.Utils.IdentificationGeneration
         /// </summary>
         public static byte[] GetRandomIdentification(SDESType type = SDESType.CNAME)
         {
-            // Creates a new instance of this class, gets random hashcodes
+            // Basically obtains various sources of randomness 
+            var randomNumber = Random.Next(int.MaxValue);
+            var processID = Process.GetCurrentProcess().ToString();
+            var dateTime = DateTime.Now.ToString("h:mm:ss tt zz");
             var typeCode = type.GetHashCode();
-            var dateTime = DateTime.Now.Ticks;
 
-            // make it more random
-            var inputString = (typeCode * Random.Next(int.MaxValue));
+
+            // a binary writer just for Jackson Dorsett :)
+            using var memoryStream = new MemoryStream();
+            using var binaryWriter = new BinaryWriter(memoryStream);
+            binaryWriter.Write(randomNumber);
+            binaryWriter.Write(processID);
+            binaryWriter.Write(dateTime);
+            binaryWriter.Write(typeCode);
 
             // use the C# library to do the heavy lifting
             using var md5 = MD5.Create();
-            var input = Encoding.ASCII.GetBytes(inputString.ToString());
-            var hash = md5.ComputeHash(input, 0, count: 4);
-
+            var hash = md5.ComputeHash(memoryStream.ToArray(), 0, count: 4);
             return hash;
         }
     }
