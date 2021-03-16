@@ -1,4 +1,5 @@
-﻿using System;
+﻿using RTP.Net.Utils;
+using System;
 using System.Collections.Generic;
 using System.Text;
 
@@ -7,7 +8,7 @@ namespace RTP.Net.RTCP
     /// <summary>
     /// Represents the 24 bit packet lost field
     /// </summary>
-    class PacketsLost
+    class PacketsLost : ISerialize
     {
         bool positive;
         private uint mLost;
@@ -17,9 +18,14 @@ namespace RTP.Net.RTCP
             uint mask = 0x7FFFF;
             if ((1 << 23 & n) == 1)
             {
-                positive = true;
+                positive = false;
                 mLost = (n | mask);
             } 
+            else
+            {
+                positive = true;
+                mLost = n;
+            }
         }
 
         public int Lost
@@ -29,6 +35,15 @@ namespace RTP.Net.RTCP
                 if (positive) return (int)mLost;
                 return -(int)mLost;
             }
+        }
+
+        public byte[] Serialize()
+        {
+            List<byte> l = new List<byte>(NetworkSerializer.Serialize((uint)Lost)) ;
+            l.RemoveAt(0);
+            //l.RemoveAt(0);
+            return l.ToArray();
+
         }
     }
 }

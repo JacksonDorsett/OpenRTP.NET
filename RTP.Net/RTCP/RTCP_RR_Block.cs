@@ -1,5 +1,7 @@
-﻿using System;
+﻿using RTP.Net.Utils;
+using System;
 using System.Collections.Generic;
+using System.IO;
 using System.Text;
 
 namespace RTP.Net.RTCP
@@ -7,7 +9,7 @@ namespace RTP.Net.RTCP
     /// <summary>
     /// RTCP Reception report block
     /// </summary>
-    class RTCP_RR_Block
+    public class RTCP_RR_Block : ISerialize
     {
         private PacketsLost mLost;
         public RTCP_RR_Block(uint ssrc, byte fraction, uint lost, uint lastSeq, uint jitter, uint lastsrc, uint lastDelay)
@@ -61,6 +63,23 @@ namespace RTP.Net.RTCP
         /// <summary>
         /// /* delay since last SR packet */
         /// </summary>
-        public uint DelayLastSource { get; private set; }             
+        public uint DelayLastSource { get; private set; }
+
+        public byte[] Serialize()
+        {
+            byte[] b = new byte[24];
+            using (BinaryWriter writer = new BinaryWriter(new MemoryStream(b)))
+            {
+                writer.Write(NetworkSerializer.Serialize(SSRC));
+                writer.Write(this.Fraction);
+                writer.Write(this.mLost.Serialize());
+                writer.Write(NetworkSerializer.Serialize(LastSequence));
+                writer.Write(NetworkSerializer.Serialize(Jitter));
+                writer.Write(NetworkSerializer.Serialize(LastSource));
+                writer.Write(NetworkSerializer.Serialize(DelayLastSource));
+
+            }
+            return b;
+        }
     }
 }

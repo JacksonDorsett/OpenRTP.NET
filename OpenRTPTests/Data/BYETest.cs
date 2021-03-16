@@ -3,7 +3,7 @@ using System.Collections.Generic;
 using System.Text;
 using NUnit.Framework;
 using RTP.Net.RTCP;
-namespace OpenRTPTests
+namespace OpenRTPTests.Data
 {
     class BYETest
     {
