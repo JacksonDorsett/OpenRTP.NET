@@ -1,7 +1,5 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Text;
-
+﻿using System.IO;
+using RTP.Net.Utils;
 namespace RTP.Net.RTCP
 {
     /// <summary>
@@ -55,6 +53,22 @@ namespace RTP.Net.RTCP
         /// </summary>
         public RTCP_RR_Block[] RR_Block { get; private set; }
 
-
+        public override byte[] Serialize()
+        {
+            using (var ms = new MemoryStream())
+            {
+                ms.Write(NetworkSerializer.Serialize(SSRC));
+                ms.Write(NetworkSerializer.Serialize(NTP_Timestamp));
+                ms.Write(NetworkSerializer.Serialize(NTP_Fraction));
+                ms.Write(NetworkSerializer.Serialize(RTP_Timestamp));
+                ms.Write(NetworkSerializer.Serialize(Packets_Sent));
+                ms.Write(NetworkSerializer.Serialize(Octets_Sent));
+                foreach (var v in RR_Block)
+                {
+                    ms.Write(v.Serialize());
+                }
+                return ms.ToArray();
+            }
+        }
     }
 }

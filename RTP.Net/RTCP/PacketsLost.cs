@@ -57,7 +57,7 @@ namespace RTP.Net.RTCP
         /// <returns>The serialization of the network.</returns>
         public byte[] Serialize()
         {
-            var l = new List<byte>(NetworkSerializer.Serialize((uint) Lost));
+            var l = new List<byte>(NetworkSerializer.Serialize((uint)Lost));
             l.RemoveAt(0);
             return l.ToArray();
         }
