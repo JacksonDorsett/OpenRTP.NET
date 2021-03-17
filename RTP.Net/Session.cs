@@ -70,6 +70,10 @@ namespace RTP.Net
         private bool
             _we_sent;
 
+        /// <summary>
+        ///     Initializes a new instance of the <see cref="Session" /> class.
+        /// </summary>
+        /// <param name="avgRtcpSize">The average RTCP size.</param>
         public Session(uint avgRtcpSize)
         {
             _avg_rtcp_size = avgRtcpSize;
@@ -94,8 +98,6 @@ namespace RTP.Net
 
             // our mutable "constant" n
             double constantN;
-
-            // our mutable "constant" tMin
 
             // check if the number of senders is less than or
             // equal to 25% of the number of members
