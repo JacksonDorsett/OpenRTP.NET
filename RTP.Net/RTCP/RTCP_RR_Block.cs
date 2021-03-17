@@ -1,8 +1,5 @@
 ﻿using RTP.Net.Utils;
-using System;
-using System.Collections.Generic;
 using System.IO;
-using System.Text;
 
 namespace RTP.Net.RTCP
 {
@@ -67,8 +64,8 @@ namespace RTP.Net.RTCP
 
         public byte[] Serialize()
         {
-            byte[] b = new byte[24];
-            using (BinaryWriter writer = new BinaryWriter(new MemoryStream(b)))
+            var b = new byte[24];
+            using (var writer = new BinaryWriter(new MemoryStream(b)))
             {
                 writer.Write(NetworkSerializer.Serialize(SSRC));
                 writer.Write(this.Fraction);

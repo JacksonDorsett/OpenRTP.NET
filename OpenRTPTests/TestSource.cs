@@ -1,6 +1,6 @@
 using NUnit.Framework;
-using RTP.Net.RTCP;
 using RTP.Net;
+using RTP.Net.RTCP;
 
 namespace OpenRTPTests
 {
@@ -28,7 +28,6 @@ namespace OpenRTPTests
         [Test]
         public void TestPacketInSequence()
         {
-            ushort seq = 5;
             Source s = new Source(5);
 
             s.UpdateSequence(6);

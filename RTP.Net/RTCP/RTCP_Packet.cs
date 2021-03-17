@@ -1,8 +1,4 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Text;
-
-namespace RTP.Net.RTCP
+﻿namespace RTP.Net.RTCP
 {
     /// <summary>
     /// One RTCP packet.

@@ -1,5 +1,4 @@
 ﻿using System;
-using System.Collections.Generic;
 using System.IO;
 using System.Text;
 
@@ -34,8 +33,8 @@ namespace RTP.Net.RTCP
 
         public byte[] Serialize()
         {
-            byte[] b = new byte[2 + Length];
-            using (BinaryWriter writer = new BinaryWriter(new MemoryStream(b)))
+            var b = new byte[2 + Length];
+            using (var writer = new BinaryWriter(new MemoryStream(b)))
             {
                 writer.Write((byte)this.Type);
                 writer.Write(Length);
