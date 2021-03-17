@@ -4,9 +4,9 @@ using System.Text;
 
 namespace RTP.Net.RTCP
 {
-    class SDESItem : ISerialize
+    public class SDESItem : ISerialize
     {
-        public SDESItem(byte type, byte length, byte[] data)
+        public SDESItem(byte type, byte length, string data)
         {
             //guard clauses
             if (type > 8) throw new NotSupportedException("unsupported SDES type, must be number: 0-8");
@@ -14,7 +14,7 @@ namespace RTP.Net.RTCP
 
             this.Type = (SDESType)type;
             this.Length = length;
-            this.data = Encoding.UTF8.GetString(data);
+            this.data = data;
         }
         /// <summary>
         ///  type of item (see SDESType)

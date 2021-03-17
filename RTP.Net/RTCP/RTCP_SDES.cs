@@ -6,7 +6,7 @@ namespace RTP.Net.RTCP
     /// <summary>
     /// source description (SDES)
     /// </summary>
-    class RTCP_SDES : RTCP_Body, ISerialize
+    public class RTCP_SDES : RTCP_Body, ISerialize
     {
         public RTCP_SDES(uint sRC, SDESItem[] items)
         {
@@ -26,6 +26,7 @@ namespace RTP.Net.RTCP
 
         public byte[] Serialize()
         {
+            byte[] b;
             using (var writer = new MemoryStream())
             {
                 writer.Write(NetworkSerializer.Serialize(SRC));
@@ -33,8 +34,9 @@ namespace RTP.Net.RTCP
                 {
                     writer.Write(i.Serialize());
                 }
-                return writer.ToArray();
+                b = writer.ToArray();
             }
+            return b;
         }
     }
 }
