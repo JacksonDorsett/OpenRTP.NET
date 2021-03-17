@@ -1,6 +1,5 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Text;
+﻿using RTP.Net.Utils;
+using System.IO;
 
 namespace RTP.Net.RTCP
 {
@@ -21,5 +20,19 @@ namespace RTP.Net.RTCP
         /// List of Reception report blocks.
         /// </summary>
         public RTCP_RR_Block[] RR_Block_list { get; private set; }
+
+
+        public override byte[] Serialize()
+        {
+            using (var ms = new MemoryStream())
+            {
+                ms.Write(NetworkSerializer.Serialize(SSRC));
+                foreach (var block in RR_Block_list)
+                {
+                    ms.Write(block.Serialize());
+                }
+                return ms.ToArray();
+            }
+        }
     }
 }

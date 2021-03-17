@@ -1,8 +1,4 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Text;
-
-namespace RTP.Net.RTCP
+﻿namespace RTP.Net.RTCP
 {
     public class Source
     {
@@ -65,7 +61,7 @@ namespace RTP.Net.RTCP
         /// estimated jitter
         /// </summary>
         public uint Jitter { get; private set; }
-    
+
         /// <summary>
         /// Derived Value checking if the source is currently valid.
         /// </summary>
@@ -89,7 +85,7 @@ namespace RTP.Net.RTCP
                 {
                     Probation--;
                     MaxSequence = seq;
-                    if(Probation == 0)
+                    if (Probation == 0)
                     {
                         InitSequence(seq);
                     }

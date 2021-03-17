@@ -1,10 +1,9 @@
 ﻿using RTP.Net.Utils;
 using System;
 using System.Collections.Generic;
-using System.Text;
 
 namespace RTP.Net.RTCP
-{  
+{
     /// <summary>
     /// Represents the 24 bit packet lost field
     /// </summary>
@@ -20,7 +19,7 @@ namespace RTP.Net.RTCP
             {
                 positive = false;
                 mLost = (n | mask);
-            } 
+            }
             else
             {
                 positive = true;
@@ -39,7 +38,7 @@ namespace RTP.Net.RTCP
 
         public byte[] Serialize()
         {
-            List<byte> l = new List<byte>(NetworkSerializer.Serialize((uint)Lost)) ;
+            List<byte> l = new List<byte>(NetworkSerializer.Serialize((uint)Lost));
             l.RemoveAt(0);
             //l.RemoveAt(0);
             return l.ToArray();

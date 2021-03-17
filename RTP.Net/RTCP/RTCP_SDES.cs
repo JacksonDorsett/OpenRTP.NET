@@ -1,13 +1,12 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Text;
+﻿using RTP.Net.Utils;
+using System.IO;
 
 namespace RTP.Net.RTCP
 {
     /// <summary>
     /// source description (SDES)
     /// </summary>
-    class RTCP_SDES : RTCP_Body
+    public class RTCP_SDES : RTCP_Body
     {
         public RTCP_SDES(uint sRC, SDESItem[] items)
         {
@@ -24,5 +23,20 @@ namespace RTP.Net.RTCP
         /// list of SDES items
         /// </summary>
         public SDESItem[] items { get; private set; }
+
+        public override byte[] Serialize()
+        {
+            byte[] b;
+            using (var writer = new MemoryStream())
+            {
+                writer.Write(NetworkSerializer.Serialize(SRC));
+                foreach(var i in items)
+                {
+                    writer.Write(i.Serialize());
+                }
+                b = writer.ToArray();
+            }
+            return b;
+        }
     }
 }
