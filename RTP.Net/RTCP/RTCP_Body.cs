@@ -1,7 +1,7 @@
 ﻿namespace RTP.Net.RTCP
 {
-    public class RTCP_Body
+    public abstract class RTCP_Body : ISerialize
     {
-
+        public abstract byte[] Serialize();
     }
 }

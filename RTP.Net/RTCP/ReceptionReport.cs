@@ -3,7 +3,7 @@ using System.IO;
 
 namespace RTP.Net.RTCP
 {
-    class ReceptionReport : RTCP_Body, ISerialize
+    class ReceptionReport : RTCP_Body
     {
         public ReceptionReport(uint sSRC, RTCP_RR_Block[] rR_Block_list)
         {
@@ -21,7 +21,8 @@ namespace RTP.Net.RTCP
         /// </summary>
         public RTCP_RR_Block[] RR_Block_list { get; private set; }
 
-        public byte[] Serialize()
+
+        public override byte[] Serialize()
         {
             using (var ms = new MemoryStream())
             {

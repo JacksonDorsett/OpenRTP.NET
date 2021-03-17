@@ -3,7 +3,7 @@ using System.IO;
 
 namespace RTP.Net.RTCP
 {
-    public class RTCP_BYE : RTCP_Body, ISerialize
+    public class RTCP_BYE : RTCP_Body
     {
         public RTCP_BYE(uint[] sRC)
         {
@@ -15,7 +15,7 @@ namespace RTP.Net.RTCP
         /// </summary>
         public uint[] SRC { get; private set; }
 
-        public byte[] Serialize()
+        public override byte[] Serialize()
         {
             byte[] b = new byte[4 * SRC.Length];
             using (BinaryWriter bw = new BinaryWriter(new MemoryStream(b)))
@@ -29,5 +29,6 @@ namespace RTP.Net.RTCP
 
             return b;
         }
+
     }
 }

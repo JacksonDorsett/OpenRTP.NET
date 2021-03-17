@@ -5,7 +5,7 @@ namespace RTP.Net.RTCP
     /// <summary>
     /// sender report (SR)
     /// </summary>
-    class SenderReport : RTCP_Body, ISerialize
+    class SenderReport : RTCP_Body
     {
         public SenderReport(uint sSRC, uint nTP_Timestamp, uint nTP_Fraction, uint rTP_Timestamp, uint packets_Sent, uint octets_Sent, RTCP_RR_Block[] rR_Block)
         {
@@ -53,7 +53,7 @@ namespace RTP.Net.RTCP
         /// </summary>
         public RTCP_RR_Block[] RR_Block { get; private set; }
 
-        public byte[] Serialize()
+        public override byte[] Serialize()
         {
             using (var ms = new MemoryStream())
             {
