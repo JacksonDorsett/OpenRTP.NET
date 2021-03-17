@@ -1,9 +1,11 @@
-﻿namespace RTP.Net.RTCP
+﻿using System.IO;
+using RTP.Net.Utils;
+namespace RTP.Net.RTCP
 {
     /// <summary>
     /// sender report (SR)
     /// </summary>
-    class SenderReport : RTCP_Body
+    class SenderReport : RTCP_Body, ISerialize
     {
         public SenderReport(uint sSRC, uint nTP_Timestamp, uint nTP_Fraction, uint rTP_Timestamp, uint packets_Sent, uint octets_Sent, RTCP_RR_Block[] rR_Block)
         {
@@ -51,6 +53,22 @@
         /// </summary>
         public RTCP_RR_Block[] RR_Block { get; private set; }
 
-
+        public byte[] Serialize()
+        {
+            using (var ms = new MemoryStream())
+            {
+                ms.Write(NetworkSerializer.Serialize(SSRC));
+                ms.Write(NetworkSerializer.Serialize(NTP_Timestamp));
+                ms.Write(NetworkSerializer.Serialize(NTP_Fraction));
+                ms.Write(NetworkSerializer.Serialize(RTP_Timestamp));
+                ms.Write(NetworkSerializer.Serialize(Packets_Sent));
+                ms.Write(NetworkSerializer.Serialize(Octets_Sent));
+                foreach (var v in RR_Block)
+                {
+                    ms.Write(v.Serialize());
+                }
+                return ms.ToArray();
+            }
+        }
     }
 }
