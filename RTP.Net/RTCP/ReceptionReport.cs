@@ -1,6 +1,9 @@
-﻿namespace RTP.Net.RTCP
+﻿using RTP.Net.Utils;
+using System.IO;
+
+namespace RTP.Net.RTCP
 {
-    class ReceptionReport : RTCP_Body
+    class ReceptionReport : RTCP_Body, ISerialize
     {
         public ReceptionReport(uint sSRC, RTCP_RR_Block[] rR_Block_list)
         {
@@ -17,5 +20,18 @@
         /// List of Reception report blocks.
         /// </summary>
         public RTCP_RR_Block[] RR_Block_list { get; private set; }
+
+        public byte[] Serialize()
+        {
+            using (var ms = new MemoryStream())
+            {
+                ms.Write(NetworkSerializer.Serialize(SSRC));
+                foreach (var block in RR_Block_list)
+                {
+                    ms.Write(block.Serialize());
+                }
+                return ms.ToArray();
+            }
+        }
     }
 }
