@@ -4,7 +4,7 @@ using System.Text;
 
 namespace RTP.Net
 {
-    interface ISerialize
+    internal interface ISerialize
     {
         byte[] Serialize();
     }

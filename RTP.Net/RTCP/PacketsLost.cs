@@ -1,49 +1,65 @@
-﻿using RTP.Net.Utils;
-using System;
+﻿using System;
 using System.Collections.Generic;
-using System.Text;
+using RTP.Net.Utils;
 
 namespace RTP.Net.RTCP
-{  
+{
     /// <summary>
-    /// Represents the 24 bit packet lost field
+    ///     Represents the 24 bit packet lost field
     /// </summary>
-    class PacketsLost : ISerialize
+    public class PacketsLost : ISerialize
     {
-        bool positive;
-        private uint mLost;
-        public PacketsLost(uint n)
+        /// <summary>
+        ///     Initializes a new instance of the <see cref="PacketsLost" /> class.
+        /// </summary>
+        /// <param name="n">An unsigned integer for data packets.</param>
+        public PacketsLost(int n)
         {
-            if (n >= (1 << 24)) throw new ArgumentOutOfRangeException("Packet Loss Exception: input must be less than 25 bytes");
-            uint mask = 0x7FFFF;
-            if ((1 << 23 & n) == 1)
+            if (n >= 1 << 24)
+                throw new ArgumentOutOfRangeException("Packet Loss Exception: input must be less than 25 bytes");
+
+            // A mask that clamps at packet loss.
+            const int mask = 0x7FFFF;
+
+            // Check if the unsigned integer is positive or negative
+            if (((1 << 23) & n) == 1)
             {
-                positive = false;
-                mLost = (n | mask);
-            } 
+                this._isPositive = false;
+
+                // clamp at the mask
+                this._numberOfPacketsLost = n | mask;
+            }
             else
             {
-                positive = true;
-                mLost = n;
+                _isPositive = true;
+                this._numberOfPacketsLost = n;
             }
         }
 
-        public int Lost
-        {
-            get
-            {
-                if (positive) return (int)mLost;
-                return -(int)mLost;
-            }
-        }
+        /// <summary>
+        ///     Gets the boolean representing the positivity of this mask.
+        /// </summary>
+        private readonly bool _isPositive;
 
+        /// <summary>
+        ///     The number of packets lost.
+        /// </summary>
+        private readonly int _numberOfPacketsLost;
+
+        /// <summary>
+        ///     Gets the number of packets lost.
+        /// </summary>
+        public int Lost => (_isPositive) ? _numberOfPacketsLost : -_numberOfPacketsLost;
+
+        /// <summary>
+        ///     Serializes the number of packets lost.
+        /// </summary>
+        /// <returns>The serialization of the network.</returns>
         public byte[] Serialize()
         {
-            List<byte> l = new List<byte>(NetworkSerializer.Serialize((uint)Lost)) ;
+            var l = new List<byte>(NetworkSerializer.Serialize((uint) Lost));
             l.RemoveAt(0);
-            //l.RemoveAt(0);
             return l.ToArray();
-
         }
     }
 }
