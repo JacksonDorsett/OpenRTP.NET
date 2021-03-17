@@ -90,10 +90,10 @@ namespace RTP.Net
         private void CalculateTransmissionInterval()
         {
             // our mutable "constant" C
-            double CONSTANT_C;
+            double constantC;
 
             // our mutable "constant" n
-            double CONSTANT_N;
+            double constantN;
 
             // our mutable "constant" tMin
 
@@ -104,20 +104,20 @@ namespace RTP.Net
                 // Checks whether or not we sent the packet
                 if (this._we_sent)
                 {
-                    CONSTANT_C = this._avg_rtcp_size / (0.25 * this._rtcp_bw);
-                    CONSTANT_N = this._senders;
+                    constantC = this._avg_rtcp_size / (0.25 * this._rtcp_bw);
+                    constantN = this._senders;
                 } 
                 else
                 {
-                    CONSTANT_C = _avg_rtcp_size / (0.75 * this._rtcp_bw);
-                    CONSTANT_N = this._members - this._senders;
+                    constantC = _avg_rtcp_size / (0.75 * this._rtcp_bw);
+                    constantN = this._members - this._senders;
                 }
             } 
             else if (this._rtcp_bw != 0)
             {
                 // cast to double to perform floating point division
-                CONSTANT_C = (double)this._avg_rtcp_size / this._rtcp_bw;
-                CONSTANT_N = this._members;
+                constantC = (double)this._avg_rtcp_size / this._rtcp_bw;
+                constantN = this._members;
             }
             else
             {
@@ -128,7 +128,7 @@ namespace RTP.Net
             var minimumTime = (this._initial) ? 2.5 : 5;
 
             // calculates our interval Td
-            var deterministicCalculatedInterval = Math.Max(minimumTime, CONSTANT_N*CONSTANT_C);
+            var deterministicCalculatedInterval = Math.Max(minimumTime, constantN*constantC);
 
             // initializes a new random
             var random = new Random();
