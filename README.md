@@ -15,7 +15,7 @@ client.Send(H264Payload);
 
 ## Contributing
 Pull requests are welcome. For major changes, please open an issue first to discuss what you would like to change.
-
+Under issues there is a TODO category for features that need to be implemented.
 Please make sure to update tests as appropriate.
 
 
