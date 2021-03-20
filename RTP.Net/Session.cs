@@ -157,7 +157,7 @@ namespace RTP.Net
         /// </summary>
         private double CalculateTransmissionInterval()
         {
-            
+            if (_rtcp_bw == 0) throw new DivideByZeroException();   
             // our mutable "constant" C
             double constantC;
 
@@ -180,7 +180,7 @@ namespace RTP.Net
 
             // check if the number of senders is less than or
             // equal to 25% of the number of members
-            if (this._senders <= 0.25 * this._members && this._rtcp_bw != 0)
+            if (this._senders <= RTCP_RCVR_BW_FRACTION * this._members)
             {
                 // Checks whether or not we sent the packet
                 if (this._we_sent)
@@ -194,16 +194,13 @@ namespace RTP.Net
                     constantN = this._members - this._senders;
                 }
             } 
-            else if (this._rtcp_bw != 0)
+            else
             {
                 // cast to double to perform floating point division
                 constantC = (double)this._avg_rtcp_size / this._rtcp_bw;
                 constantN = this._members;
             }
-            else
-            {
-                throw new ArithmeticException("Cannot divide by zero!");
-            }
+
 
             // sets the constant Tmin
             var minimumTime = (this._initial) ? 2.5 : 5;
