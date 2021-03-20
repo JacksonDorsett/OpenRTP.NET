@@ -84,7 +84,7 @@ namespace RTP.Net
             this._members = 1;
             this._we_sent = false;
             this._initial = true;
-            this._calculatedInterval = this.CalculateTransmissionInterval();
+            this._calculatedInterval = this.RTCP_Interval;
         }
 
 
@@ -92,90 +92,93 @@ namespace RTP.Net
         ///     Calculates the transmission interval of our packets.
         ///     Source: (https://tools.ietf.org/html/rfc3550#section-6.3)
         /// </summary>
-        private double CalculateTransmissionInterval()
+        private double RTCP_Interval
         {
-            if (_rtcp_bw == 0) throw new DivideByZeroException();
-
-            /*
-            * Minimum average time between RTCP packets from this site (in
-            * seconds).  This time prevents the reports from `clumping' when
-            * sessions are small and the law of large numbers isn't helping
-            * to smooth out the traffic.  It also keeps the report interval
-            * from becoming ridiculously small during transient outages like
-            * a network partition.
-            */
-            var RTCP_MIN_TIME = (this._initial) ? 2.5 : 5;
-
-            // current bandwidth
-            double current_bandwidth = this._rtcp_bw;
-
-            // our mutable "constant" n
-            int n; /* no. of members for computation */
-            double t; /* interval */
-            /*
-             * Fraction of the RTCP bandwidth to be shared among active
-             * senders.  (This fraction was chosen so that in a typical
-             * session with one or two active senders, the computed report
-             * time would be roughly equal to the minimum report time so that
-             * we don't unnecessarily slow down receiver reports.)  The
-             * receiver fraction must be 1 - the sender fraction.
-             */
-            const double RTCP_SENDER_BW_FRACTION = 0.25;
-            const double RTCP_RCVR_BW_FRACTION = (1 - RTCP_SENDER_BW_FRACTION);
-
-            /*
-             * To compensate for "timer reconsideration" converging to a
-             * value below the intended average.
-             */
-            const double COMPENSATION = Math.E - ((double)3 / 2);
-            /*
-             * Dedicate a fraction of the RTCP bandwidth to senders unless
-             * the number of senders is large enough that their share is
-             * more than that fraction.
-             */
-            n = _members;
-            if (this._senders <= RTCP_RCVR_BW_FRACTION * this._members)
+            get
             {
-                // Checks whether or not we sent the packet
-                if (this._we_sent)
+                if (_rtcp_bw == 0) throw new DivideByZeroException();
+
+                /*
+                * Minimum average time between RTCP packets from this site (in
+                * seconds).  This time prevents the reports from `clumping' when
+                * sessions are small and the law of large numbers isn't helping
+                * to smooth out the traffic.  It also keeps the report interval
+                * from becoming ridiculously small during transient outages like
+                * a network partition.
+                */
+                var RTCP_MIN_TIME = (this._initial) ? 2.5 : 5;
+
+                // current bandwidth
+                double current_bandwidth = this._rtcp_bw;
+
+                // our mutable "constant" n
+                int n; /* no. of members for computation */
+                double t; /* interval */
+                /*
+                 * Fraction of the RTCP bandwidth to be shared among active
+                 * senders.  (This fraction was chosen so that in a typical
+                 * session with one or two active senders, the computed report
+                 * time would be roughly equal to the minimum report time so that
+                 * we don't unnecessarily slow down receiver reports.)  The
+                 * receiver fraction must be 1 - the sender fraction.
+                 */
+                const double RTCP_SENDER_BW_FRACTION = 0.25;
+                const double RTCP_RCVR_BW_FRACTION = (1 - RTCP_SENDER_BW_FRACTION);
+
+                /*
+                 * To compensate for "timer reconsideration" converging to a
+                 * value below the intended average.
+                 */
+                const double COMPENSATION = Math.E - ((double)3 / 2);
+                /*
+                 * Dedicate a fraction of the RTCP bandwidth to senders unless
+                 * the number of senders is large enough that their share is
+                 * more than that fraction.
+                 */
+                n = _members;
+                if (this._senders <= RTCP_RCVR_BW_FRACTION * this._members)
                 {
-                    current_bandwidth = this._avg_rtcp_size / (RTCP_SENDER_BW_FRACTION * this._rtcp_bw);
-                    n = this._senders;
-                } 
-                else
-                {
-                    current_bandwidth = _avg_rtcp_size / (RTCP_RCVR_BW_FRACTION * this._rtcp_bw);
-                    n -= this._senders;
+                    // Checks whether or not we sent the packet
+                    if (this._we_sent)
+                    {
+                        current_bandwidth = this._avg_rtcp_size / (RTCP_SENDER_BW_FRACTION * this._rtcp_bw);
+                        n = this._senders;
+                    }
+                    else
+                    {
+                        current_bandwidth = _avg_rtcp_size / (RTCP_RCVR_BW_FRACTION * this._rtcp_bw);
+                        n -= this._senders;
+                    }
                 }
+
+                /*
+                * The effective number of sites times the average packet size is
+                * the total number of octets sent when each site sends a report.
+                * Dividing this by the effective bandwidth gives the time
+                * interval over which those packets must be sent in order to
+                * meet the bandwidth target, with a minimum enforced.  In that
+                * time interval we send one report so this time is also our
+                * average time between reports.
+                */
+
+                t = _avg_rtcp_size * n / current_bandwidth;
+                if (t < RTCP_MIN_TIME) t = RTCP_MIN_TIME;
+                // calculates our interval Td
+                //var deterministicCalculatedInterval = Math.Max(RTCP_MIN_TIME, n*current_bandwidth);
+
+                // initializes a new random
+                var random = new Random();
+
+                /*
+                 * To avoid traffic bursts from unintended synchronization with
+                 * other sites, we then pick our actual next report interval as a
+                 * random number uniformly distributed between 0.5*t and 1.5*t.
+                 */
+                t = t * random.NextDouble();
+                t /= COMPENSATION;
+
+                return t;
             }
-
-            /*
-            * The effective number of sites times the average packet size is
-            * the total number of octets sent when each site sends a report.
-            * Dividing this by the effective bandwidth gives the time
-            * interval over which those packets must be sent in order to
-            * meet the bandwidth target, with a minimum enforced.  In that
-            * time interval we send one report so this time is also our
-            * average time between reports.
-            */
-
-            t = _avg_rtcp_size * n / current_bandwidth;
-            if (t < RTCP_MIN_TIME) t = RTCP_MIN_TIME;
-            // calculates our interval Td
-            //var deterministicCalculatedInterval = Math.Max(RTCP_MIN_TIME, n*current_bandwidth);
-
-            // initializes a new random
-            var random = new Random();
-
-            /*
-             * To avoid traffic bursts from unintended synchronization with
-             * other sites, we then pick our actual next report interval as a
-             * random number uniformly distributed between 0.5*t and 1.5*t.
-             */
-            t = t * random.NextDouble();
-            t /= COMPENSATION;
-
-            return t;
         }
     }
 }
