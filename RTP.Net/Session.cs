@@ -1,9 +1,12 @@
-﻿using System;
-
+﻿using RTP.Net.RTCP;
+using System;
+using System.Collections.Generic;
 namespace RTP.Net
 {
     internal class Session
     {
+        Dictionary<uint, Source> sourceTable;
+
         /// <summary>
         ///     The average compound RTCP packet size, in octets,
         ///     over all RTCP packets sent and received by this participant.The
@@ -41,12 +44,12 @@ namespace RTP.Net
         ///     "session bandwidth" parameter supplied to the application at
         ///     startup.
         /// </summary>
-        private uint _rtcp_bw;
+        private double _rtcp_bw;
 
         /// <summary>
         ///     The most current estimate for the number of senders in the session.
         /// </summary>
-        private uint _senders;
+        private int _senders;
 
         /// <summary>
         ///     The next scheduled transmission time of an RTCP packet.
@@ -67,11 +70,12 @@ namespace RTP.Net
         ///     Flag that is true if and only if the application has sent data since
         ///     the second previous RTCP report was transmitted.
         /// </summary>
-        private bool
-            _we_sent;
+        private bool _we_sent;
 
         public Session(uint avgRtcpSize)
         {
+            this.sourceTable = new Dictionary<uint, Source>();
+
             _avg_rtcp_size = avgRtcpSize;
             this._tp = 0;
             this._currentTime = DateTime.Now;
@@ -83,17 +87,94 @@ namespace RTP.Net
             this.CalculateTransmissionInterval();
         }
 
+        private void UpdateSource(RTCP_RR_Block RR)
+        {
+            Source s = this.sourceTable[RR.SSRC];
+
+            
+        }
+        
+        //private double RTCP_Interval
+        //{
+        //    get
+        //    {
+        //        /*
+        //        * Minimum average time between RTCP packets from this site (in
+        //        * seconds).  This time prevents the reports from `clumping' when
+        //        * sessions are small and the law of large numbers isn't helping
+        //        * to smooth out the traffic.  It also keeps the report interval
+        //        * from becoming ridiculously small during transient outages like
+        //        * a network partition.
+        //        */
+        //        const double RTCP_MIN_TIME = 5d;
+
+        //        /*
+        //        * Fraction of the RTCP bandwidth to be shared among active
+        //        * senders.  (This fraction was chosen so that in a typical
+        //        * session with one or two active senders, the computed report
+        //        * time would be roughly equal to the minimum report time so that
+        //        * we don't unnecessarily slow down receiver reports.)  The
+        //        * receiver fraction must be 1 - the sender fraction.
+        //        */
+        //        const double RTCP_SENDER_BW_FRACTION = 0.25;
+        //        const double RTCP_RCVR_BW_FRACTION = (1 - RTCP_SENDER_BW_FRACTION);
+        //        /*
+        //       /* To compensate for "timer reconsideration" converging to a
+        //        * value below the intended average.
+        //        */
+        //        const double COMPENSATION = 2.71828 - 1.5;
+        //        double t;                   /* interval */
+        //        double rtcp_min_time = RTCP_MIN_TIME;
+        //        int n;                      /* no. of members for computation */
+
+        //        if (_initial) rtcp_min_time /= 2;
+        //        /*
+        //        * Dedicate a fraction of the RTCP bandwidth to senders unless
+        //        * the number of senders is large enough that their share is
+        //        * more than that fraction.
+        //        */
+        //        n = (int)_members;
+
+        //        if(_senders <= _members * RTCP_SENDER_BW_FRACTION)
+        //        {
+        //            if (_we_sent)
+        //            {
+        //                _rtcp_bw *= RTCP_SENDER_BW_FRACTION;
+        //                n = _senders;
+        //            }
+        //            else
+        //            {
+        //                _rtcp_bw *= RTCP_RCVR_BW_FRACTION;
+        //                n -= _senders;
+        //            }
+        //        }
+        //    }
+        //}
+        //*/
         /// <summary>
         ///     Calculates the transmission interval of our packets.
         ///     Source: (https://tools.ietf.org/html/rfc3550#section-6.3)
         /// </summary>
-        private void CalculateTransmissionInterval()
+        private double CalculateTransmissionInterval()
         {
+            
             // our mutable "constant" C
             double constantC;
 
             // our mutable "constant" n
             double constantN;
+
+            /*
+             * Fraction of the RTCP bandwidth to be shared among active
+             * senders.  (This fraction was chosen so that in a typical
+             * session with one or two active senders, the computed report
+             * time would be roughly equal to the minimum report time so that
+             * we don't unnecessarily slow down receiver reports.)  The
+             * receiver fraction must be 1 - the sender fraction.
+             */
+            const double RTCP_SENDER_BW_FRACTION = 0.25;
+            const double RTCP_RCVR_BW_FRACTION = (1 - RTCP_SENDER_BW_FRACTION);
+             
 
             // our mutable "constant" tMin
 
@@ -104,12 +185,12 @@ namespace RTP.Net
                 // Checks whether or not we sent the packet
                 if (this._we_sent)
                 {
-                    constantC = this._avg_rtcp_size / (0.25 * this._rtcp_bw);
+                    constantC = this._avg_rtcp_size / (RTCP_SENDER_BW_FRACTION * this._rtcp_bw);
                     constantN = this._senders;
                 } 
                 else
                 {
-                    constantC = _avg_rtcp_size / (0.75 * this._rtcp_bw);
+                    constantC = _avg_rtcp_size / (RTCP_RCVR_BW_FRACTION * this._rtcp_bw);
                     constantN = this._members - this._senders;
                 }
             } 
@@ -141,6 +222,8 @@ namespace RTP.Net
             // reconsideration algorithm converges to a value of the RTCP bandwidth below the
             // intended average.
             this._calculatedInterval /= Math.E - ((double) 3 / 2);
+
+            return _calculatedInterval;
         }
     }
 }

@@ -13,7 +13,7 @@ namespace RTP.Net.RTCP
         ///     Initializes a new instance of the <see cref="PacketsLost" /> class.
         /// </summary>
         /// <param name="n">An unsigned integer for data packets.</param>
-        public PacketsLost(int n)
+        public PacketsLost(uint n)
         {
             if (n >= 1 << 24)
                 throw new ArgumentOutOfRangeException("Packet Loss Exception: input must be less than 25 bytes");
@@ -27,12 +27,12 @@ namespace RTP.Net.RTCP
                 this._isPositive = false;
 
                 // clamp at the mask
-                this._numberOfPacketsLost = n | mask;
+                this._numberOfPacketsLost = (int)n | mask;
             }
             else
             {
                 _isPositive = true;
-                this._numberOfPacketsLost = n;
+                this._numberOfPacketsLost = (int)n;
             }
         }
 
