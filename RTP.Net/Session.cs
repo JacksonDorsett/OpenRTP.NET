@@ -157,12 +157,29 @@ namespace RTP.Net
         /// </summary>
         private double CalculateTransmissionInterval()
         {
-            if (_rtcp_bw == 0) throw new DivideByZeroException();   
+            if (_rtcp_bw == 0) throw new DivideByZeroException();
+
+            /*
+            * Minimum average time between RTCP packets from this site (in
+            * seconds).  This time prevents the reports from `clumping' when
+            * sessions are small and the law of large numbers isn't helping
+            * to smooth out the traffic.  It also keeps the report interval
+            * from becoming ridiculously small during transient outages like
+            * a network partition.
+            */
+            /*
+            * Very first call at application start-up uses half the min
+            * delay for quicker notification while still allowing some time
+            * before reporting for randomization and to learn about other
+            * sources so the report interval will converge to the correct
+            * interval more quickly.
+            */
+            var RTCP_MIN_TIME = (this._initial) ? 2.5 : 5;
             // our mutable "constant" C
             double constantC;
 
             // our mutable "constant" n
-            double constantN;
+            double n;
 
             /*
              * Fraction of the RTCP bandwidth to be shared among active
@@ -174,39 +191,43 @@ namespace RTP.Net
              */
             const double RTCP_SENDER_BW_FRACTION = 0.25;
             const double RTCP_RCVR_BW_FRACTION = (1 - RTCP_SENDER_BW_FRACTION);
-             
 
-            // our mutable "constant" tMin
-
-            // check if the number of senders is less than or
-            // equal to 25% of the number of members
+            /*
+             * To compensate for "timer reconsideration" converging to a
+             * value below the intended average.
+             */
+            const double COMPENSATION = Math.E - ((double)3 / 2);
+            /*
+             * Dedicate a fraction of the RTCP bandwidth to senders unless
+             * the number of senders is large enough that their share is
+             * more than that fraction.
+             */
             if (this._senders <= RTCP_RCVR_BW_FRACTION * this._members)
             {
                 // Checks whether or not we sent the packet
                 if (this._we_sent)
                 {
                     constantC = this._avg_rtcp_size / (RTCP_SENDER_BW_FRACTION * this._rtcp_bw);
-                    constantN = this._senders;
+                    n = this._senders;
                 } 
                 else
                 {
                     constantC = _avg_rtcp_size / (RTCP_RCVR_BW_FRACTION * this._rtcp_bw);
-                    constantN = this._members - this._senders;
+                    n = this._members - this._senders;
                 }
             } 
             else
             {
                 // cast to double to perform floating point division
                 constantC = (double)this._avg_rtcp_size / this._rtcp_bw;
-                constantN = this._members;
+                n = this._members;
             }
 
 
-            // sets the constant Tmin
-            var minimumTime = (this._initial) ? 2.5 : 5;
+
 
             // calculates our interval Td
-            var deterministicCalculatedInterval = Math.Max(minimumTime, constantN*constantC);
+            var deterministicCalculatedInterval = Math.Max(RTCP_MIN_TIME, n*constantC);
 
             // initializes a new random
             var random = new Random();
@@ -218,7 +239,8 @@ namespace RTP.Net
             // The resulting value is divided by a constant to compensate for the fact the timer
             // reconsideration algorithm converges to a value of the RTCP bandwidth below the
             // intended average.
-            this._calculatedInterval /= Math.E - ((double) 3 / 2);
+            
+            this._calculatedInterval /= COMPENSATION;
 
             return _calculatedInterval;
         }
