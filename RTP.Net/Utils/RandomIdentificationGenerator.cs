@@ -3,7 +3,7 @@ using System.Diagnostics;
 using System.IO;
 using System.Security.Cryptography;
 
-namespace RTP.Net.Utils.IdentificationGeneration
+namespace RTP.Net.Utils
 {
     /// <summary>
     ///     Generates a random 32 bit identifier using
