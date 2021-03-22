@@ -2,9 +2,11 @@
 using System.Collections.Generic;
 using System.Text;
 
-namespace RTP.Net
+namespace RTP.Net.Data
 {
-    class PacketType
+    public enum PacketType
     {
+        RTP,
+        RTCP
     }
 }

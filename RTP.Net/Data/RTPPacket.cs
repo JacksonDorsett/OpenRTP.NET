@@ -5,7 +5,7 @@ using System.Text;
 
 namespace RTP.Net.Data
 {
-    class RTPPacket : Packet
+    public class RTPPacket : Packet
     {
 
         public override PacketType PacketType => PacketType.RTP;
@@ -57,7 +57,7 @@ namespace RTP.Net.Data
         /// <param name="timeStamp">A timestamp that reflects the sampling instant of the first octet in the RTP data packet.</param>
         /// <param name="ssrc">The SSRC field identifies a synchronization source.</param>
         /// <param name="csrcList"> The CSRC list identifies the contributing sources for the payload contained in this packet.</param>
-        public RTPPacket(RTPVersion version, bool padding, bool extension, byte csrcCount, bool marker,
+        public RTPPacket(byte version, bool padding, bool extension, byte csrcCount, bool marker,
             byte payloadType, ushort sequenceNum, uint timeStamp, uint ssrc, uint[] csrcList, byte[] data)
         {
             //This field identifies the version of RTP.  The version defined by
@@ -175,7 +175,7 @@ namespace RTP.Net.Data
         ///     initially implemented in the "vat" audio tool.)
         ///     (https://tools.ietf.org/html/rfc3550)
         /// </summary>
-        public RTPVersion Version { get; }
+        public byte Version { get; }
 
 
         /// <summary>
@@ -319,6 +319,7 @@ namespace RTP.Net.Data
             SerializeNetworkInt(ret, this.SSRC, 8);
 
             SerializeCSRC(ret);
+
             return ret;
         }
 

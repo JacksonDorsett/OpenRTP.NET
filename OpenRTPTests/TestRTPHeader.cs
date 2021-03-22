@@ -1,13 +1,13 @@
 ﻿using NUnit.Framework;
-using RTP.Net;
+using RTP.Net.Data;
 namespace OpenRTPTests
 {
-    class TestRTPHeader
+    class TestRTPPacket
     {
         [Test]
         public void TestSerialize()
         {
-            RTPHeader t = new RTPHeader(RTPVersion.TWO, false, false, 2, false, 32, 64, 1, 1240000, new uint[] { 16, 32 });
+            RTPPacket t = new RTPPacket(2, false, false, 2, false, 32, 64, 1, 1240000, new uint[] { 16, 32 },null);
             var bts = t.Serialize();
             Assert.AreEqual(130, bts[0]);
             Assert.AreEqual(32, bts[1]);

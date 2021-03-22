@@ -22,11 +22,6 @@ namespace RTP.Net.RTCP
         public RTCPHeader(bool padding, byte count, RTCPType type, uint length, uint ssrc, uint timeStamp,
             uint packetCount, uint octetCount)
         {
-            // Identifies the version of RTP, which is the same in RTCP packets
-            // as in RTP data packets.  The version defined by this specification
-            // is two (2). (https://tools.ietf.org/html/rfc3550)
-            this.Version = RTPVersion.TWO;
-
             // If the padding bit is set, this individual RTCP packet contains
             // some additional padding octets at the end which are not part of
             // the control information but are included in the length field.  The
@@ -58,7 +53,7 @@ namespace RTP.Net.RTCP
         /// <summary>
         ///     The RTP version that we are currently using.
         /// </summary>
-        public RTPVersion Version { get; private set; }
+        public byte Version { get => 2; }
 
         /// <summary>
         ///     If the padding bit is set, this individual RTCP packet contains
