@@ -16,9 +16,5 @@
         public RTCPHeader Header { get; private set; }
 
         public RTCP_Body Body { get; private set; }
-
-        // may need later...
-        //RTCPType Type { get => Header.Type; }
-
     }
 }
