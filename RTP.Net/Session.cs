@@ -2,7 +2,7 @@
 
 namespace RTP.Net
 {
-    internal class Session
+    public class Session
     {
         /// <summary>
         ///     The average compound RTCP packet size, in octets,
