@@ -1,13 +1,15 @@
 ﻿using System.IO;
+using RTP.Net.Data;
 using RTP.Net.Utils;
 namespace RTP.Net.RTCP
 {
     /// <summary>
     /// sender report (SR)
     /// </summary>
-    class SenderReport : RTCP_Body
+    class SenderReport : RTCPPacket
     {
-        public SenderReport(uint sSRC, uint nTP_Timestamp, uint nTP_Fraction, uint rTP_Timestamp, uint packets_Sent, uint octets_Sent, RTCP_RR_Block[] rR_Block)
+        public SenderReport(bool padding, byte count, uint length, uint sSRC, uint nTP_Timestamp, uint nTP_Fraction, uint rTP_Timestamp, uint packets_Sent, uint octets_Sent, RTCP_RR_Block[] rR_Block)
+            : base(padding, count, length)
         {
             SSRC = sSRC;
             NTP_Timestamp = nTP_Timestamp;
@@ -53,8 +55,13 @@ namespace RTP.Net.RTCP
         /// </summary>
         public RTCP_RR_Block[] RR_Block { get; private set; }
 
+        public override RTCPType Type => RTCPType.SR;
+
+        public override PacketType PacketType => PacketType.RTCP;
+
         public override byte[] Serialize()
         {
+            base.Serialize();
             using (var ms = new MemoryStream())
             {
                 ms.Write(NetworkSerializer.Serialize(SSRC));
