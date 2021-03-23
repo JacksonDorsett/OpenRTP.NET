@@ -9,7 +9,7 @@ namespace RTP.Net.RTCP
 {
     abstract class RTCPPacket : Packet
     {
-        public RTCPPacket(bool padding, byte count, uint length, uint ssrc)
+        public RTCPPacket(bool padding, byte count, uint length)
         {
             // If the padding bit is set, this individual RTCP packet contains
             // some additional padding octets at the end which are not part of
@@ -32,7 +32,7 @@ namespace RTP.Net.RTCP
             // A field that varies by packet type
             this.Count = count;
             this.Length = length;
-            this.SSRC = ssrc;
+            //this.SSRC = ssrc;
         }
 
         /// <summary>
@@ -62,18 +62,6 @@ namespace RTP.Net.RTCP
         
         public byte Count { get; private set; }
 
-
-        /// <summary>
-        ///     The SSRC field identifies the synchronization source.  This
-        ///     identifier SHOULD be chosen randomly, with the intent that no two
-        ///     synchronization sources within the same RTP session will have the
-        ///     same SSRC identifier.
-        ///     Although the probability of multiple sources choosing the same identifier is
-        ///     low, all RTP implementations must be prepared to detect and
-        ///     resolve collisions.
-        /// </summary>
-        public uint SSRC { get; private set; }
-
         /// <summary>
         ///     Gets the type of the RTCP packet.
         /// </summary>
@@ -95,7 +83,7 @@ namespace RTP.Net.RTCP
                 b[1] = (byte)Type;
                 ms.Write(b);
                 ms.Write(NetworkSerializer.Serialize(Length));
-                ms.Write(NetworkSerializer.Serialize(SSRC));
+                //ms.Write(NetworkSerializer.Serialize(SSRC));
                 return ms.ToArray();
 
                 
