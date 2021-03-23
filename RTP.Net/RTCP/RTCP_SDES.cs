@@ -7,9 +7,9 @@ namespace RTP.Net.RTCP
     /// <summary>
     /// source description (SDES)
     /// </summary>
-    internal class RTCP_SDES : RTCPPacket
+    public class RTCP_SDES : RTCPPacket
     {
-        public RTCP_SDES(bool padding, byte count, uint length, uint sRC, SDESItem[] items) : base(padding, count, length)
+        public RTCP_SDES(bool padding, byte count, ushort length, uint sRC, SDESItem[] items) : base(padding, count, length)
         {
             SRC = sRC;
             this.items = items;

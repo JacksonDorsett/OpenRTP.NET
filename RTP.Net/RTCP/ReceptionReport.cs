@@ -6,7 +6,7 @@ namespace RTP.Net.RTCP
 {
     class ReceptionReport : RTCPPacket
     {
-        public ReceptionReport(bool padding, byte count, uint length, uint sSRC, RTCP_RR_Block[] rR_Block_list) : base(padding, count, length)
+        public ReceptionReport(bool padding, byte count, ushort length, uint sSRC, RTCP_RR_Block[] rR_Block_list) : base(padding, count, length)
         {
             SSRC = sSRC;
             RR_Block_list = rR_Block_list;

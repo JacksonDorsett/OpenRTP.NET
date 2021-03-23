@@ -12,7 +12,7 @@ namespace OpenRTPTests.Data
         public void TestSdesSerialize()
         {
             SDESItem[] a = {new SDESItem(2,5,"Hello") };
-            RTCP_SDES s = new RTCP_SDES(1000, a);
+            RTCP_SDES s = new RTCP_SDES(false, 3, 20,1000, a);
             byte[] v = s.Serialize();
             //Test SSRC
             Assert.AreEqual(11, v.Length);

@@ -6,9 +6,9 @@ namespace RTP.Net.RTCP
     /// <summary>
     /// sender report (SR)
     /// </summary>
-    class SenderReport : RTCPPacket
+    public class SenderReport : RTCPPacket
     {
-        public SenderReport(bool padding, byte count, uint length, uint sSRC, uint nTP_Timestamp, uint nTP_Fraction, uint rTP_Timestamp, uint packets_Sent, uint octets_Sent, RTCP_RR_Block[] rR_Block)
+        public SenderReport(bool padding, byte count, ushort length, uint sSRC, uint nTP_Timestamp, uint nTP_Fraction, uint rTP_Timestamp, uint packets_Sent, uint octets_Sent, RTCP_RR_Block[] rR_Block)
             : base(padding, count, length)
         {
             SSRC = sSRC;

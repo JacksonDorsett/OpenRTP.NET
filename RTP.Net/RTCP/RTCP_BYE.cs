@@ -4,9 +4,9 @@ using System.IO;
 
 namespace RTP.Net.RTCP
 {
-    internal class RTCP_BYE : RTCPPacket
+    public class RTCP_BYE : RTCPPacket
     {
-        public RTCP_BYE(bool padding, byte count, uint length, uint[] ssrc) : base(padding, count, length)
+        public RTCP_BYE(bool padding, byte count, ushort length, uint[] ssrc) : base(padding, count, length)
         {
             this.SRC = ssrc;
         }
@@ -22,12 +22,14 @@ namespace RTP.Net.RTCP
 
         public override byte[] Serialize()
         {
-            base.Serialize();
+            
             byte[] b = new byte[4 * SRC.Length];
-            using (BinaryWriter bw = new BinaryWriter(new MemoryStream(b)))
+            using (BinaryWriter bw = new BinaryWriter(new MemoryStream()))
             {
+                bw.Write(base.Serialize());
                 foreach (uint i in SRC)
                 {
+                    
                     bw.Write(NetworkSerializer.Serialize(i));
                 }
             }

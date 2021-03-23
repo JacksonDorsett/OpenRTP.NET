@@ -7,9 +7,9 @@ using System.Text;
 
 namespace RTP.Net.RTCP
 {
-    abstract class RTCPPacket : Packet
+    public abstract class RTCPPacket : Packet
     {
-        public RTCPPacket(bool padding, byte count, uint length)
+        public RTCPPacket(bool padding, byte count, ushort length)
         {
             // If the padding bit is set, this individual RTCP packet contains
             // some additional padding octets at the end which are not part of
@@ -70,7 +70,7 @@ namespace RTP.Net.RTCP
         /// <summary>
         ///     Gets the length of the RTCP packet.
         /// </summary>
-        public uint Length { get; private set; }
+        public ushort Length { get; private set; }
 
         public override byte[] Serialize()
         {
