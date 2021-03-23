@@ -19,8 +19,7 @@ namespace RTP.Net.RTCP
         /// <param name="count">The byte representing the count.</param>
         /// <param name="type">The type enum representing the type of the RTCPType.</param>
         /// <param name="length">The length of the RTCP packet.</param>
-        public RTCPHeader(bool padding, byte count, RTCPType type, uint length, uint ssrc, uint timeStamp,
-            uint packetCount, uint octetCount)
+        public RTCPHeader(bool padding, RTCPType type, uint length)
         {
             // If the padding bit is set, this individual RTCP packet contains
             // some additional padding octets at the end which are not part of
@@ -41,13 +40,8 @@ namespace RTP.Net.RTCP
             this.Padding = padding;
 
             // A field that varies by packet type
-            this.ReceptionReportCount = count;
             this.Type = type;
             this.Length = length;
-            this.SSRC = ssrc;
-            this.TimeStamp = timeStamp;
-            this.PacketCount = packetCount;
-            this.OctetCount = octetCount;
         }
 
         /// <summary>
@@ -76,22 +70,6 @@ namespace RTP.Net.RTCP
         protected bool Padding { get; private set; }
 
         /// <summary>
-        ///     The number of reception report blocks contained in this packet.  A
-        ///     value of zero is valid.
-        /// </summary>
-        protected int ReceptionReportCount
-        {
-            get => this._count;
-
-            private set
-            {
-                if (value >= 1 << 5)
-                    throw new ArgumentOutOfRangeException("Count", value, "input data must be 5 bytes");
-                this._count = value;
-            }
-        }
-
-        /// <summary>
         ///     The SSRC field identifies the synchronization source.  This
         ///     identifier SHOULD be chosen randomly, with the intent that no two
         ///     synchronization sources within the same RTP session will have the
@@ -99,8 +77,7 @@ namespace RTP.Net.RTCP
         ///     Although the probability of multiple sources choosing the same identifier is
         ///     low, all RTP implementations must be prepared to detect and
         ///     resolve collisions.
-        /// </summary>
-        public uint SSRC { get; private set; }
+        /// </summary
 
         /// <summary>
         ///     Gets the type of the RTCP packet.
@@ -112,38 +89,6 @@ namespace RTP.Net.RTCP
         /// </summary>
         public uint Length { get; private set; }
 
-        /// <summary>
-        ///     Corresponds to the same time as the NTP timestamp (above), but in
-        ///     the same units and with the same random offset as the RTP
-        ///     timestamps in data packets.  This correspondence may be used for
-        ///     intra- and inter-media synchronization for sources whose NTP
-        ///     timestamps are synchronized, and may be used by media-independent
-        ///     receivers to estimate the nominal RTP clock frequency.  Note that
-        ///     in most cases this timestamp will not be equal to the RTP
-        ///     timestamp in any adjacent data packet.  Rather, it MUST be
-        ///     calculated from the corresponding NTP timestamp using the
-        ///     relationship between the RTP timestamp counter and real time as
-        ///     maintained by periodically checking the wallclock time at a
-        ///     sampling instant.
-        /// </summary>
-        protected uint TimeStamp { get; private set; }
-
-        /// <summary>
-        ///     The total number of RTP data packets transmitted by the sender
-        ///     since starting transmission up until the time this SR packet was
-        ///     generated.  The count SHOULD be reset if the sender changes its
-        ///     SSRC identifier
-        /// </summary>
-        protected uint PacketCount { get; private set; }
-
-        /// <summary>
-        ///     The total number of payload octets (i.e., not including header or
-        /// padding) transmitted in RTP data packets by the sender since
-        /// starting transmission up until the time this SR packet was
-        /// generated.  The count SHOULD be reset if the sender changes its
-        /// SSRC identifier.  This field can be used to estimate the average
-        /// payload data rate.
-        /// </summary>
-        protected uint OctetCount { get; private set; }
+        
     }
 }
