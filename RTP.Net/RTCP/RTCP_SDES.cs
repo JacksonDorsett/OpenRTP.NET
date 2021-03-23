@@ -27,7 +27,6 @@ namespace RTP.Net.RTCP
 
         public override RTCPType Type => RTCPType.SDES;
 
-        public override PacketType PacketType => PacketType.RTCP;
 
         public override byte[] Serialize()
         {

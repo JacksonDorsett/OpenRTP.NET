@@ -57,7 +57,6 @@ namespace RTP.Net.RTCP
 
         public override RTCPType Type => RTCPType.SR;
 
-        public override PacketType PacketType => PacketType.RTCP;
 
         public override byte[] Serialize()
         {

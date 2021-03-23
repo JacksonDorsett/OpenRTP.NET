@@ -67,10 +67,13 @@ namespace RTP.Net.RTCP
         /// </summary>
         public abstract RTCPType Type { get; }
 
+
         /// <summary>
         ///     Gets the length of the RTCP packet.
         /// </summary>
         public ushort Length { get; private set; }
+
+        public override PacketType PacketType => PacketType.RTCP;
 
         public override byte[] Serialize()
         {

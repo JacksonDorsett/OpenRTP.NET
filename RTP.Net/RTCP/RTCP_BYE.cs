@@ -18,8 +18,6 @@ namespace RTP.Net.RTCP
 
         public override RTCPType Type => RTCPType.BYE;
 
-        public override PacketType PacketType => throw new System.NotImplementedException();
-
         public override byte[] Serialize()
         {
             
