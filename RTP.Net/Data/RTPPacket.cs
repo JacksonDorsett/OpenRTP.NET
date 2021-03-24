@@ -1,10 +1,15 @@
 ﻿using RTP.Net.Utils;
 using System;
+using System.Collections.Generic;
+using System.Text;
 
-namespace RTP.Net
+namespace RTP.Net.Data
 {
-    public class RTPHeader
+    public class RTPPacket : Packet
     {
+
+        public override PacketType PacketType => PacketType.RTP;
+
 
         /// <summary>
         ///     The CSRC count contains the number of CSRC identifiers that follow
@@ -52,8 +57,8 @@ namespace RTP.Net
         /// <param name="timeStamp">A timestamp that reflects the sampling instant of the first octet in the RTP data packet.</param>
         /// <param name="ssrc">The SSRC field identifies a synchronization source.</param>
         /// <param name="csrcList"> The CSRC list identifies the contributing sources for the payload contained in this packet.</param>
-        public RTPHeader(RTPVersion version, bool padding, bool extension, byte csrcCount, bool marker,
-            byte payloadType, ushort sequenceNum, uint timeStamp, uint ssrc, uint[] csrcList)
+        public RTPPacket(byte version, bool padding, bool extension, byte csrcCount, bool marker,
+            byte payloadType, ushort sequenceNum, uint timeStamp, uint ssrc, uint[] csrcList, byte[] data)
         {
             //This field identifies the version of RTP.  The version defined by
             // this specification is two (2).  (The value 1 is used by the first
@@ -157,6 +162,9 @@ namespace RTP.Net
             // receiver.
             // (https://tools.ietf.org/html/rfc3550)
             CSRCList = csrcList;
+
+
+            Data = data;
         }
 
         /// <summary>
@@ -167,7 +175,7 @@ namespace RTP.Net
         ///     initially implemented in the "vat" audio tool.)
         ///     (https://tools.ietf.org/html/rfc3550)
         /// </summary>
-        public RTPVersion Version { get; }
+        public byte Version { get; }
 
 
         /// <summary>
@@ -292,7 +300,9 @@ namespace RTP.Net
 
         public uint Length => 12 + 4 * (uint)this.CSRCList.Length;
 
-        public byte[] Serialize()
+        public byte[] Data { get; private set; }
+
+        public override byte[] Serialize()
         {
             byte[] ret = new byte[this.Length];
             ret[0] |= 2 << 6;
@@ -309,6 +319,7 @@ namespace RTP.Net
             SerializeNetworkInt(ret, this.SSRC, 8);
 
             SerializeCSRC(ret);
+
             return ret;
         }
 
@@ -350,3 +361,4 @@ namespace RTP.Net
         }
     }
 }
+

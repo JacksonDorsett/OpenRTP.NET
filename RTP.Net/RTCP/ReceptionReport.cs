@@ -1,11 +1,12 @@
-﻿using RTP.Net.Utils;
+﻿using RTP.Net.Data;
+using RTP.Net.Utils;
 using System.IO;
 
 namespace RTP.Net.RTCP
 {
-    class ReceptionReport : RTCP_Body
+    class ReceptionReport : RTCPPacket
     {
-        public ReceptionReport(uint sSRC, RTCP_RR_Block[] rR_Block_list)
+        public ReceptionReport(bool padding, byte count, ushort length, uint sSRC, RTCP_RR_Block[] rR_Block_list) : base(padding, count, length)
         {
             SSRC = sSRC;
             RR_Block_list = rR_Block_list;
@@ -21,9 +22,12 @@ namespace RTP.Net.RTCP
         /// </summary>
         public RTCP_RR_Block[] RR_Block_list { get; private set; }
 
+        public override RTCPType Type => RTCPType.RR;
+
 
         public override byte[] Serialize()
         {
+            base.Serialize();
             using (var ms = new MemoryStream())
             {
                 ms.Write(NetworkSerializer.Serialize(SSRC));

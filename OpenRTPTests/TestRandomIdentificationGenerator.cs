@@ -1,6 +1,6 @@
 ﻿using NUnit.Framework;
 using RTP.Net;
-using RTP.Net.Utils.IdentificationGeneration;
+using RTP.Net.Utils;
 
 namespace OpenRTPTests
 {
@@ -19,8 +19,8 @@ namespace OpenRTPTests
         [TestCase(SDESType.LOC, SDESType.CNAME, ExpectedResult = false)]
         public bool TestIdentificationGenerator(SDESType one, SDESType two)
         {
-            var identificationOne = RandomIdentificationGenerator.GetRandomIdentification(one);
-            var identificationTwo = RandomIdentificationGenerator.GetRandomIdentification(two);
+            var identificationOne = RandomIdentificationGenerator.GetRandomIdentification();
+            var identificationTwo = RandomIdentificationGenerator.GetRandomIdentification();
             
             return IsEqual(identificationOne, identificationTwo);
         }

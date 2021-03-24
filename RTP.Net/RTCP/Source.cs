@@ -137,6 +137,14 @@
 
         }
 
+        public void Update(RTCP_RR_Block RR)
+        {
+            uint lost = Expected - Recieved;
+            
+            ExpectedPrior = Expected;
+
+        }
+
         private void InitSequence(ushort seq)
         {
             this.BaseSequence = seq;
@@ -147,5 +155,8 @@
             this.RecievedPrior = 0;
             this.ExpectedPrior = 0;
         }
+
+        private uint ExpectedMax { get => Cycles + MaxSequence; }
+        private uint Expected { get => ExpectedMax - BaseSequence + 1; }
     }
 }

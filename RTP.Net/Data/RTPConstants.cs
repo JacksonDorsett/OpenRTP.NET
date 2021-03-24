@@ -12,7 +12,7 @@ namespace RTP.Net
         /// <summary>
         ///     An RTPVersion enumerator representing the versions.
         /// </summary>
-        public static readonly RTPVersion VERSION = RTPVersion.TWO;
+        public static readonly byte VERSION = 2;
 
         /// <summary>
         ///     A readonly unsigned integer representing the

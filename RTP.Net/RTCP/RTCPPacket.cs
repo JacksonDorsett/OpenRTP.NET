@@ -1,25 +1,15 @@
-﻿using System;
+﻿using RTP.Net.Data;
+using RTP.Net.Utils;
+using System;
+using System.Collections.Generic;
+using System.IO;
+using System.Text;
 
 namespace RTP.Net.RTCP
 {
-    /// <summary>
-    ///     RTCP common header word.
-    /// </summary>
-    public class RTCPHeader
+    public abstract class RTCPPacket : Packet
     {
-        /// <summary>
-        ///     A field that varies by packet type.
-        /// </summary>
-        private int _count;
-
-        /// <summary>
-        ///     Initializes a new instance of the <see cref="RTCPHeader" /> class.
-        /// </summary>
-        /// <param name="padding">The padding bit.</param>
-        /// <param name="count">The byte representing the count.</param>
-        /// <param name="type">The type enum representing the type of the RTCPType.</param>
-        /// <param name="length">The length of the RTCP packet.</param>
-        public RTCPHeader(bool padding, RTCPType type, uint length)
+        public RTCPPacket(bool padding, byte count, ushort length)
         {
             // If the padding bit is set, this individual RTCP packet contains
             // some additional padding octets at the end which are not part of
@@ -40,8 +30,9 @@ namespace RTP.Net.RTCP
             this.Padding = padding;
 
             // A field that varies by packet type
-            this.Type = type;
+            this.Count = count;
             this.Length = length;
+            //this.SSRC = ssrc;
         }
 
         /// <summary>
@@ -67,28 +58,40 @@ namespace RTP.Net.RTCP
         ///     individual packet and add padding to the last individual packet.
         ///     (https://tools.ietf.org/html/rfc3550#section-6.1)
         /// </summary>
-        protected bool Padding { get; private set; }
-
-        /// <summary>
-        ///     The SSRC field identifies the synchronization source.  This
-        ///     identifier SHOULD be chosen randomly, with the intent that no two
-        ///     synchronization sources within the same RTP session will have the
-        ///     same SSRC identifier.
-        ///     Although the probability of multiple sources choosing the same identifier is
-        ///     low, all RTP implementations must be prepared to detect and
-        ///     resolve collisions.
-        /// </summary
+        public bool Padding { get; private set; }
+        
+        public byte Count { get; private set; }
 
         /// <summary>
         ///     Gets the type of the RTCP packet.
         /// </summary>
-        public RTCPType Type { get; private set; }
+        public abstract RTCPType Type { get; }
+
 
         /// <summary>
         ///     Gets the length of the RTCP packet.
         /// </summary>
-        public uint Length { get; private set; }
+        public ushort Length { get; private set; }
 
-        
+        public override PacketType PacketType => PacketType.RTCP;
+
+        public override byte[] Serialize()
+        {
+            using (var ms = new MemoryStream())
+            {
+                byte[] b = new byte[2];
+                b[0] |= 2 << 6;
+                b[0] |= (byte)(this.Padding ? (byte)1 : (byte)0 << 5);
+                b[0] |= Count;
+                b[1] = (byte)Type;
+                ms.Write(b);
+                ms.Write(NetworkSerializer.Serialize(Length));
+                //ms.Write(NetworkSerializer.Serialize(SSRC));
+                return ms.ToArray();
+
+                
+
+            }
+        }
     }
 }

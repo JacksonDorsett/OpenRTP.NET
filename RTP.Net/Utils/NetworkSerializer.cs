@@ -10,5 +10,12 @@ namespace RTP.Net.Utils
             if (BitConverter.IsLittleEndian) Array.Reverse(b);
             return b;
         }
+
+        public static byte[] Serialize(ushort n)
+        {
+            var b = BitConverter.GetBytes(n);
+            if (BitConverter.IsLittleEndian) Array.Reverse(b);
+            return b;
+        }
     }
 }
