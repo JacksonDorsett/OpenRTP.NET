@@ -22,21 +22,19 @@ namespace RTP.Net.RTCP
         /// </summary>
         public RTCP_RR_Block[] RR_Block_list { get; private set; }
 
-        public override RTCPType Type => RTCPType.RR;
+        protected override RTCPType Type => RTCPType.RR;
 
 
         public override byte[] Serialize()
         {
             base.Serialize();
-            using (var ms = new MemoryStream())
+            using var ms = new MemoryStream();
+            ms.Write(NetworkSerializer.Serialize(SSRC));
+            foreach (var block in RR_Block_list)
             {
-                ms.Write(NetworkSerializer.Serialize(SSRC));
-                foreach (var block in RR_Block_list)
-                {
-                    ms.Write(block.Serialize());
-                }
-                return ms.ToArray();
+                ms.Write(block.Serialize());
             }
+            return ms.ToArray();
         }
     }
 }

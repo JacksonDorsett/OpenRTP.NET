@@ -51,7 +51,7 @@ namespace RTP.Net.RTCP
         /// <summary>
         ///     Gets the RTCPType that is associated with the RTCPCompoundPacket
         /// </summary>
-        public override RTCPType Type { get; }
+        protected override RTCPType Type { get; }
         
         /// <summary>
         ///     A SDES packet.
