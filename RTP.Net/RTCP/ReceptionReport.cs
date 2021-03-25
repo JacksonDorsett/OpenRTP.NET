@@ -22,7 +22,7 @@ namespace RTP.Net.RTCP
         /// </summary>
         public RTCP_RR_Block[] RR_Block_list { get; private set; }
 
-        protected override RTCPType Type => RTCPType.RR;
+        public override RTCPType Type => RTCPType.RR;
 
 
         public override byte[] Serialize()

@@ -25,7 +25,7 @@ namespace RTP.Net.RTCP
         /// </summary>
         public SDESItem[] items { get; private set; }
 
-        protected override RTCPType Type => RTCPType.SDES;
+        public override RTCPType Type => RTCPType.SDES;
 
 
         public override byte[] Serialize()

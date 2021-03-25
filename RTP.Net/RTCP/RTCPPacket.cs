@@ -58,14 +58,14 @@ namespace RTP.Net.RTCP
         ///     individual packet and add padding to the last individual packet.
         ///     (https://tools.ietf.org/html/rfc3550#section-6.1)
         /// </summary>
-        private bool Padding { get; set; }
+        public bool Padding { get; set; }
 
-        private byte Count { get; set; }
+        public byte Count { get; set; }
 
         /// <summary>
         ///     Gets the type of the RTCP packet.
         /// </summary>
-        protected abstract RTCPType Type { get; }
+        public abstract RTCPType Type { get; }
 
 
         /// <summary>

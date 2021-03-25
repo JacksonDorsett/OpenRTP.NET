@@ -55,7 +55,7 @@ namespace RTP.Net.RTCP
         /// </summary>
         public RTCP_RR_Block[] RR_Block { get; private set; }
 
-        protected override RTCPType Type => RTCPType.SR;
+        public override RTCPType Type => RTCPType.SR;
 
 
         public override byte[] Serialize()

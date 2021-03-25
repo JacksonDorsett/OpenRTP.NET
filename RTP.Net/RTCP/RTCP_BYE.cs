@@ -16,7 +16,7 @@ namespace RTP.Net.RTCP
         /// </summary>
         public uint[] SRC { get; private set; }
 
-        protected override RTCPType Type => RTCPType.BYE;
+        public override RTCPType Type => RTCPType.BYE;
 
         public override byte[] Serialize()
         {
