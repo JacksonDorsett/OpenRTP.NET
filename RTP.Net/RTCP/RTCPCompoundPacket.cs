@@ -10,7 +10,7 @@ namespace RTP.Net.RTCP
     /// </summary>
     public class RTCPCompoundPacket : RTCPPacket
     {
-        private List<RTCPPacket> _packetList;
+        private readonly List<RTCPPacket> _packetList;
 
         /// <summary>
         ///     Initializes a new instance of the <see cref="RTCPCompoundPacket" /> class.
