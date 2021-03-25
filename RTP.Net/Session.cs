@@ -5,7 +5,7 @@ namespace RTP.Net
 {
     public class Session
     {
-        Dictionary<uint, Source> sourceTable;
+        private Dictionary<uint, Source> _sourceTable;
 
         /// <summary>
         ///     The average compound RTCP packet size, in octets,
@@ -78,7 +78,7 @@ namespace RTP.Net
         /// <param name="avgRtcpSize">The average RTCP size.</param>
         public Session(uint avgRtcpSize)
         {
-            this.sourceTable = new Dictionary<uint, Source>();
+            this._sourceTable = new Dictionary<uint, Source>();
 
             _avg_rtcp_size = avgRtcpSize;
             this._tp = 0;
@@ -88,7 +88,7 @@ namespace RTP.Net
             this._members = 1;
             this._we_sent = false;
             this._initial = true;
-            this._calculatedInterval = this.RTCP_Interval;
+            this._calculatedInterval = this.RtcpInterval;
         }
 
 
@@ -96,7 +96,7 @@ namespace RTP.Net
         ///     Calculates the transmission interval of our packets.
         ///     Source: (https://tools.ietf.org/html/rfc3550#section-6.3)
         /// </summary>
-        private double RTCP_Interval
+        private double RtcpInterval
         {
             get
             {
@@ -113,11 +113,8 @@ namespace RTP.Net
                 var RTCP_MIN_TIME = (this._initial) ? 2.5 : 5;
 
                 // current bandwidth
-                double current_bandwidth = this._rtcp_bw;
-
-                // our mutable "constant" n
-                int n; /* no. of members for computation */
-                double t; /* interval */
+                var current_bandwidth = this._rtcp_bw;
+                
                 /*
                  * Fraction of the RTCP bandwidth to be shared among active
                  * senders.  (This fraction was chosen so that in a typical
@@ -139,7 +136,7 @@ namespace RTP.Net
                  * the number of senders is large enough that their share is
                  * more than that fraction.
                  */
-                n = _members;
+                var n = _members;
                 if (this._senders <= RTCP_RCVR_BW_FRACTION * this._members)
                 {
                     // Checks whether or not we sent the packet
@@ -165,7 +162,7 @@ namespace RTP.Net
                 * average time between reports.
                 */
 
-                t = _avg_rtcp_size * n / current_bandwidth;
+                var t = _avg_rtcp_size * n / current_bandwidth;
                 if (t < RTCP_MIN_TIME) t = RTCP_MIN_TIME;
                 // calculates our interval Td
                 //var deterministicCalculatedInterval = Math.Max(RTCP_MIN_TIME, n*current_bandwidth);
@@ -178,7 +175,7 @@ namespace RTP.Net
                  * other sites, we then pick our actual next report interval as a
                  * random number uniformly distributed between 0.5*t and 1.5*t.
                  */
-                t = t * random.NextDouble();
+                t *= random.NextDouble();
                 t /= COMPENSATION;
 
                 return t;
