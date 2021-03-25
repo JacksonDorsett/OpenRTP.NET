@@ -12,31 +12,31 @@ namespace RTP.Net
         /// <summary>
         ///     An RTPVersion enumerator representing the versions.
         /// </summary>
-        public static readonly byte VERSION = 2;
+        public const byte VERSION = 2;
 
         /// <summary>
         ///     A readonly unsigned integer representing the
         ///     RTP_SEQ_MOD. A modulus function for the RTP sequence
         ///     to check it wraps around the max value to 0
         /// </summary>
-        public static readonly uint RTP_SEQ_MOD = (1 << 16);
+        public const uint RTP_SEQ_MOD = (1 << 16);
 
         /// <summary>
         ///     A readonly unsigned integer representing
         ///     the RTP_MAX_SDS.
         /// </summary>
-        public static readonly uint RTP_MAX_SDS = 255;
+        public const uint RTP_MAX_SDS = 255;
 
         /// <summary>
         ///     A readonly unsigned short representing the
         ///     RTCP_VALID_MASK.
         /// </summary>
-        public static readonly ushort RTCP_VALID_MASK = (0xc000 | 0x2000 | 0xfe);
+        public const ushort RTCP_VALID_MASK = (0xc000 | 0x2000 | 0xfe);
 
         /// <summary>
         ///     A readonly unsigned integer representing the
         ///     RTCP_VALID_VALUE.
         /// </summary>
-        public static readonly uint RTCP_VALID_VALUE = (((uint)VERSION << 14) | (uint)RTCPType.SR);
+        public const uint RTCP_VALID_VALUE = (((uint)VERSION << 14) | (uint)RTCPType.SR);
     }
 }
