@@ -4,7 +4,7 @@ using System.IO;
 
 namespace RTP.Net.RTCP
 {
-    class ReceptionReport : RTCPPacket
+    public class ReceptionReport : RTCPPacket
     {
         public ReceptionReport(bool padding, byte count, ushort length, uint sSRC, RTCP_RR_Block[] rR_Block_list) : base(padding, count, length)
         {

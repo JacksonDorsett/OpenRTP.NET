@@ -31,17 +31,13 @@ namespace RTP.Net.RTCP
         public override byte[] Serialize()
         {
             base.Serialize();
-            byte[] b;
-            using (var writer = new MemoryStream())
+            using var writer = new MemoryStream();
+            writer.Write(NetworkSerializer.Serialize(SRC));
+            foreach(var i in items)
             {
-                writer.Write(NetworkSerializer.Serialize(SRC));
-                foreach(var i in items)
-                {
-                    writer.Write(i.Serialize());
-                }
-                b = writer.ToArray();
+                writer.Write(i.Serialize());
             }
-            return b;
+            return writer.ToArray();
         }
     }
 }
