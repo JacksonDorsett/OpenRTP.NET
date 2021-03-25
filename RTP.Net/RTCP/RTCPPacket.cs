@@ -9,7 +9,7 @@ namespace RTP.Net.RTCP
 {
     public abstract class RTCPPacket : Packet
     {
-        public RTCPPacket(bool padding, byte count, ushort length)
+        protected RTCPPacket(bool padding, byte count, ushort length)
         {
             // If the padding bit is set, this individual RTCP packet contains
             // some additional padding octets at the end which are not part of
@@ -58,9 +58,9 @@ namespace RTP.Net.RTCP
         ///     individual packet and add padding to the last individual packet.
         ///     (https://tools.ietf.org/html/rfc3550#section-6.1)
         /// </summary>
-        public bool Padding { get; private set; }
-        
-        public byte Count { get; private set; }
+        public bool Padding { get; set; }
+
+        public byte Count { get; set; }
 
         /// <summary>
         ///     Gets the type of the RTCP packet.
@@ -71,27 +71,22 @@ namespace RTP.Net.RTCP
         /// <summary>
         ///     Gets the length of the RTCP packet.
         /// </summary>
-        public ushort Length { get; private set; }
+        private ushort Length { get; set; }
 
         public override PacketType PacketType => PacketType.RTCP;
 
         public override byte[] Serialize()
         {
-            using (var ms = new MemoryStream())
-            {
-                byte[] b = new byte[2];
-                b[0] |= 2 << 6;
-                b[0] |= (byte)(this.Padding ? (byte)1 : (byte)0 << 5);
-                b[0] |= Count;
-                b[1] = (byte)Type;
-                ms.Write(b);
-                ms.Write(NetworkSerializer.Serialize(Length));
-                //ms.Write(NetworkSerializer.Serialize(SSRC));
-                return ms.ToArray();
-
-                
-
-            }
+            using var ms = new MemoryStream();
+            byte[] b = new byte[2];
+            b[0] |= 2 << 6;
+            b[0] |= (byte)(this.Padding ? 1 : 0);
+            b[0] |= Count;
+            b[1] = (byte)Type;
+            ms.Write(b);
+            ms.Write(NetworkSerializer.Serialize(Length));
+            //ms.Write(NetworkSerializer.Serialize(SSRC));
+            return ms.ToArray();
         }
     }
 }
