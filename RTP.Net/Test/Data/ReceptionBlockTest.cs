@@ -1,6 +1,7 @@
 ﻿using NUnit.Framework;
 using RTP.Net.RTCP;
-namespace OpenRTPTests.Data
+
+namespace RTP.Net.Test.Data
 {
     class ReceptionBlockTest
     {

@@ -7,7 +7,7 @@ namespace RTP.Net.RTCP
     /// <summary>
     ///     Represents the 24 bit packet lost field
     /// </summary>
-    public class PacketsLost : ISerialize
+    internal class PacketsLost : ISerialize
     {
         /// <summary>
         ///     Initializes a new instance of the <see cref="PacketsLost" /> class.
