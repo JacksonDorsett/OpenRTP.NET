@@ -34,12 +34,10 @@ namespace RTP.Net.RTCP
         public byte[] Serialize()
         {
             var b = new byte[2 + Length];
-            using (var writer = new BinaryWriter(new MemoryStream(b)))
-            {
-                writer.Write((byte)this.Type);
-                writer.Write(Length);
-                writer.Write(Encoding.UTF8.GetBytes(data));
-            }
+            using var writer = new BinaryWriter(new MemoryStream(b));
+            writer.Write((byte)this.Type);
+            writer.Write(Length);
+            writer.Write(Encoding.UTF8.GetBytes(data));
             return b;
         }
     }

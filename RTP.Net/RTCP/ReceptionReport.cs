@@ -4,7 +4,7 @@ using System.IO;
 
 namespace RTP.Net.RTCP
 {
-    class ReceptionReport : RTCPPacket
+    public class ReceptionReport : RTCPPacket
     {
         public ReceptionReport(bool padding, byte count, ushort length, uint sSRC, RTCP_RR_Block[] rR_Block_list) : base(padding, count, length)
         {
@@ -28,15 +28,13 @@ namespace RTP.Net.RTCP
         public override byte[] Serialize()
         {
             base.Serialize();
-            using (var ms = new MemoryStream())
+            using var ms = new MemoryStream();
+            ms.Write(NetworkSerializer.Serialize(SSRC));
+            foreach (var block in RR_Block_list)
             {
-                ms.Write(NetworkSerializer.Serialize(SSRC));
-                foreach (var block in RR_Block_list)
-                {
-                    ms.Write(block.Serialize());
-                }
-                return ms.ToArray();
+                ms.Write(block.Serialize());
             }
+            return ms.ToArray();
         }
     }
 }

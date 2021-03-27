@@ -34,13 +34,7 @@ namespace RTP.Net.RTCP
         /// <summary>
         /// cumulative number of packets lost (signed!) -- 24 bytes
         /// </summary>
-        public int Lost
-        {
-            get
-            {
-                return mLost.Lost;
-            }
-        }
+        public int Lost => mLost.Lost;
 
         /// <summary>
         /// /* extended last seq. no. received */
@@ -65,17 +59,14 @@ namespace RTP.Net.RTCP
         public byte[] Serialize()
         {
             var b = new byte[24];
-            using (var writer = new BinaryWriter(new MemoryStream(b)))
-            {
-                writer.Write(NetworkSerializer.Serialize(SSRC));
-                writer.Write(this.Fraction);
-                writer.Write(this.mLost.Serialize());
-                writer.Write(NetworkSerializer.Serialize(LastSequence));
-                writer.Write(NetworkSerializer.Serialize(Jitter));
-                writer.Write(NetworkSerializer.Serialize(LastSource));
-                writer.Write(NetworkSerializer.Serialize(DelayLastSource));
-
-            }
+            using var writer = new BinaryWriter(new MemoryStream(b));
+            writer.Write(NetworkSerializer.Serialize(SSRC));
+            writer.Write(this.Fraction);
+            writer.Write(this.mLost.Serialize());
+            writer.Write(NetworkSerializer.Serialize(LastSequence));
+            writer.Write(NetworkSerializer.Serialize(Jitter));
+            writer.Write(NetworkSerializer.Serialize(LastSource));
+            writer.Write(NetworkSerializer.Serialize(DelayLastSource));
             return b;
         }
     }
